@@ -1,0 +1,51 @@
+{
+  "name": "routiva",
+  "version": "0.1.0",
+  "description": "A lightweight, zero-dependency Express.js alternative built on node:http — routing, middleware, body parsing, static files, CORS, compression and rate limiting.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "sideEffects": false,
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:watch": "node --test --watch",
+    "example": "node examples/basic.js",
+    "crud": "node crud-app/server.js",
+    "crud:test": "node --test crud-app/test/crud.test.js",
+    "crud:smoke": "bash crud-app/curl.sh",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "http",
+    "framework",
+    "express",
+    "router",
+    "routing",
+    "middleware",
+    "rest",
+    "api",
+    "server",
+    "zero-dependency",
+    "node"
+  ],
+  "author": "uditcoderrr",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uditcoderrr/routiva.git"
+  },
+  "homepage": "https://github.com/uditcoderrr/routiva#readme",
+  "bugs": {
+    "url": "https://github.com/uditcoderrr/routiva/issues"
+  }
+}

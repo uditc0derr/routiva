@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>routiva</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>routiva</h1>
+      <p>Static files are served by <code>serveStatic()</code>.</p>
+      <p id="status">checking API…</p>
+    </main>
+    <script>
+      fetch('/api/status')
+        .then((r) => r.json())
+        .then((data) => {
+          document.getElementById('status').textContent = `API: ${data.status}`;
+        })
+        .catch(() => {
+          document.getElementById('status').textContent = 'API unreachable';
+        });
+    </script>
+  </body>
+</html>

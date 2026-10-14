@@ -1,0 +1,74 @@
+### routiva CRUD app — sample requests
+### Use with the VS Code "REST Client" extension or JetBrains HTTP client.
+### Start the app first: npm run crud
+
+@host = http://127.0.0.1:3000
+
+### Health
+GET {{host}}/api/health
+
+### List (paginated, filtered, sorted)
+GET {{host}}/api/products?page=1&limit=5&sort=price&order=desc
+
+### List in-stock only, search
+GET {{host}}/api/products?inStock=true&search=key
+
+### Stats
+GET {{host}}/api/stats
+
+### Categories
+GET {{host}}/api/categories
+
+### Create
+POST {{host}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Webcam HD",
+  "sku": "CAM-1",
+  "price": 59.99,
+  "stock": 7,
+  "category": "video"
+}
+
+### Read one  (replace :id)
+GET {{host}}/api/products/1
+
+### Replace
+PUT {{host}}/api/products/1
+Content-Type: application/json
+
+{
+  "name": "Mechanical Keyboard v2",
+  "sku": "KB-100",
+  "price": 99.0,
+  "stock": 15,
+  "category": "peripherals"
+}
+
+### Partial update
+PATCH {{host}}/api/products/1
+Content-Type: application/json
+
+{ "stock": 42 }
+
+### Restock
+POST {{host}}/api/products/1/restock
+Content-Type: application/json
+
+{ "amount": 25 }
+
+### Validation error (422)
+POST {{host}}/api/products
+Content-Type: application/json
+
+{ "name": "", "sku": "bad sku", "price": -5 }
+
+### Wrong method (405 + Allow header)
+POST {{host}}/api/products/1
+Content-Type: application/json
+
+{}
+
+### Delete
+DELETE {{host}}/api/products/1

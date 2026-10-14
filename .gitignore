@@ -1,0 +1,10 @@
+node_modules/
+npm-debug.log*
+.DS_Store
+coverage/
+*.log
+*.tmp
+*.tgz
+
+# CRUD app runtime data
+crud-app/data/
