@@ -1,6 +1,6 @@
 {
   "name": "routiva",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A lightweight, zero-dependency Express.js alternative built on node:http — routing, middleware, body parsing, static files, CORS, compression and rate limiting.",
   "type": "module",
   "main": "src/index.js",
