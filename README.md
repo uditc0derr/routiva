@@ -51,6 +51,7 @@ Requires **Node.js 18+**. No runtime dependencies. No dev dependencies.
 13. [Design principles](#design-principles)
 14. [Roadmap](#roadmap)
 15. [License](#license)
+16. [Author](#author)
 
 ---
 
@@ -980,3 +981,10 @@ Ideas that would fit the architecture without breaking the zero-dependency rule:
 ## License
 
 MIT — see [LICENSE](./LICENSE).
+
+---
+
+## Author
+
+- **npm:** [@uditcoderrr](https://www.npmjs.com/~uditcoderrr)
+- **GitHub:** [@uditc0derr](https://github.com/uditc0derr)
