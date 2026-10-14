@@ -1,5 +1,7 @@
 # routiva
 
+[![CI](https://github.com/uditc0derr/routiva/actions/workflows/ci.yml/badge.svg)](https://github.com/uditc0derr/routiva/actions/workflows/ci.yml)
+
 > A lightweight, **zero-dependency** Express.js alternative built directly on
 > Node's `node:http`. Routing, middleware, request/response helpers, error
 > handling, body parsing, static files, CORS, compression, logging and rate

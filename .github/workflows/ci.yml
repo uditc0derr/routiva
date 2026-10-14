@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The package claims `engines.node >= 18`, so we verify every
+        # major line from the minimum up to current.
+        node: ['18.x', '20.x', '22.x', '24.x']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      # Zero dependencies, so there is nothing to install — `npm test`
+      # simply runs `node --test` (the built-in test runner).
+      - name: Run test suite
+        run: npm test
+
+  package:
+    name: package (npm pack)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      # Guards against accidentally shipping test/example files in the
+      # npm tarball. `--dry-run` writes nothing.
+      - name: Verify the publishable tarball
+        run: npm pack --dry-run
