@@ -1,11 +1,19 @@
 # routiva
 
 [![CI](https://github.com/uditc0derr/routiva/actions/workflows/ci.yml/badge.svg)](https://github.com/uditc0derr/routiva/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/routiva.svg)](https://www.npmjs.com/package/routiva)
+[![npm downloads](https://img.shields.io/npm/dm/routiva.svg)](https://www.npmjs.com/package/routiva)
+[![license](https://img.shields.io/npm/l/routiva.svg)](./LICENSE)
+[![zero dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](https://www.npmjs.com/package/routiva?activeTab=dependencies)
 
 > A lightweight, **zero-dependency** Express.js alternative built directly on
 > Node's `node:http`. Routing, middleware, request/response helpers, error
 > handling, body parsing, static files, CORS, compression, logging and rate
 > limiting — in ~1,900 lines you can read in an afternoon.
+
+```bash
+npm install routiva
+```
 
 Requires **Node.js 18+**. No runtime dependencies. No dev dependencies.
 
