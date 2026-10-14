@@ -1,7 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "installCommand": "echo \"routiva website: zero dependencies, nothing to install\"",
-  "buildCommand": "node website/build.mjs",
-  "outputDirectory": "website/dist"
+  "installCommand": "cd website && npm install",
+  "buildCommand": "cd website && npm run build",
+  "outputDirectory": "website/dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
