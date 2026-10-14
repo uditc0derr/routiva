@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coming from Express · routiva docs</title>
+  <meta name="description" content="Map an Express app onto routiva: what stays identical, what changes, and where Express still wins.">
+  <meta name="theme-color" content="#0a0a0b">
+  <meta name="generator" content="routiva docs">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="routiva">
+  <meta property="og:title" content="Coming from Express · routiva docs">
+  <meta property="og:description" content="Map an Express app onto routiva: what stays identical, what changes, and where Express still wins.">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/assets/styles-0S-izC94.js"></script>
+  <script type="module" crossorigin src="/assets/docs-DJN-6ILu.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/styles-DlVBLwF3.css">
+</head>
+<body>
+  <a class="skip-link" href="#doc-content">Skip to content</a>
+
+  <header class="docs-topbar">
+    <button class="docs-menu-btn" id="docsMenuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="docsSidebar">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="nav-logo" href="/">
+      <span class="logo-mark">r</span>
+      <span class="logo-text">routiva</span>
+      <span class="logo-tag">docs</span>
+    </a>
+    <button class="docs-search-trigger" id="docsSearchTrigger" aria-label="Search documentation">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span class="docs-search-label">Search docs</span>
+      <span class="kbd">⌘K</span>
+    </button>
+    <nav class="docs-topbar-links">
+      <a href="/">Home</a>
+      <a class="hide-sm" href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub</a>
+      <a class="hide-sm" href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm</a>
+    </nav>
+  </header>
+
+  <div class="docs-body">
+    <aside class="docs-sidebar" id="docsSidebar">
+      <nav class="docs-nav" aria-label="Documentation">
+        <div class="docs-nav-section"><div class="docs-nav-label">Introduction</div><a class="docs-nav-link" href="getting-started.html">Getting started</a><a class="docs-nav-link" href="installation.html">Installation</a><a class="docs-nav-link" href="quick-start.html">Quick start</a></div><div class="docs-nav-section"><div class="docs-nav-label">Core concepts</div><a class="docs-nav-link" href="core-concepts.html">Core concepts</a><a class="docs-nav-link" href="routing.html">Routing</a><a class="docs-nav-link" href="middleware.html">Middleware</a><a class="docs-nav-link" href="request-response.html">Request &amp; Response</a><a class="docs-nav-link" href="body-parsing.html">Body parsing</a><a class="docs-nav-link" href="static-files.html">Static files</a><a class="docs-nav-link" href="error-handling.html">Error handling</a></div><div class="docs-nav-section"><div class="docs-nav-label">Built-in middleware</div><a class="docs-nav-link" href="cors.html">CORS</a><a class="docs-nav-link" href="compression.html">Compression</a><a class="docs-nav-link" href="rate-limiting.html">Rate limiting</a><a class="docs-nav-link" href="logging.html">Logging</a></div><div class="docs-nav-section"><div class="docs-nav-label">Guides</div><a class="docs-nav-link" href="examples.html">Examples</a><a class="docs-nav-link" href="testing.html">Testing</a><a class="docs-nav-link" href="performance.html">Performance</a><a class="docs-nav-link active" href="express-comparison.html">Coming from Express</a><a class="docs-nav-link" href="faq.html">FAQ &amp; roadmap</a></div><div class="docs-nav-section"><div class="docs-nav-label">Reference</div><a class="docs-nav-link" href="api-reference.html">API reference</a><a class="docs-nav-link" href="architecture.html">Architecture</a></div>
+      </nav>
+      <div class="docs-sidebar-foot">
+        <a href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm ↗</a>
+        <a href="https://github.com/uditc0derr/routiva/blob/main/LICENSE" target="_blank" rel="noopener">MIT ↗</a>
+      </div>
+    </aside>
+    <div class="docs-scrim" id="docsScrim"></div>
+
+    <main class="docs-main" id="doc-content">
+      <div class="docs-main-inner">
+        <article class="docs-article">
+          <header class="docs-article-head">
+            <div class="docs-eyebrow">Guides</div>
+            <h1>Coming from Express</h1>
+            <p class="docs-lede">Map an Express app onto routiva: what stays identical, what changes, and where Express still wins.</p>
+          </header>
+          <div class="docs-prose"><h2 id="the-mental-model-is-unchanged">The mental model is unchanged<a class="anchor" href="#the-mental-model-is-unchanged" aria-hidden="true">#</a></h2>
+<p>An app is a router. A router is an ordered list of layers. A layer is a route, a piece of middleware, or an error handler. <code>next()</code> moves a request down the list, and registration order is execution order. None of that changes when you move from Express to routiva.</p>
+<p>The handler signatures are identical, so most route bodies copy over untouched. A function <code>(req, res, next)</code> is middleware in both. A four-arity function <code>(err, req, res, next)</code> is an error handler in both.</p>
+<h2 id="api-mapping">API mapping<a class="anchor" href="#api-mapping" aria-hidden="true">#</a></h2>
+<div class="table-wrap"><table><thead><tr><th>Express</th><th>routiva</th></tr></thead><tbody><tr><td><code>const app = express()</code></td><td><code>const app = createApp()</code> or <code>new App()</code></td></tr><tr><td><code>app.use(fn)</code></td><td><code>app.use(fn)</code></td></tr><tr><td><code>app.use(&#39;/api&#39;, router)</code></td><td><code>app.use(&#39;/api&#39;, router)</code></td></tr><tr><td><code>app.get/post/put/patch/delete/head/options</code></td><td>identical, plus <code>app.all()</code></td></tr><tr><td><code>express.Router()</code></td><td><code>new Router()</code></td></tr><tr><td><code>express.json()</code></td><td><code>json()</code> or <code>App.json()</code></td></tr><tr><td><code>express.urlencoded({ extended: true })</code></td><td><code>urlencoded({ extended: true })</code></td></tr><tr><td><code>express.static(&#39;public&#39;)</code></td><td><code>serveStatic(&#39;public&#39;)</code></td></tr><tr><td><code>express.text()</code> / <code>express.raw()</code></td><td><code>text()</code> / <code>raw()</code></td></tr><tr><td><code>req.params</code>, <code>req.query</code>, <code>req.body</code>, <code>req.cookies</code></td><td>identical</td></tr><tr><td><code>req.get(name)</code> / <code>req.header(name)</code></td><td>identical</td></tr><tr><td><code>res.status/json/send/redirect/type/set/cookie</code></td><td>identical</td></tr><tr><td><code>res.sendFile(path)</code> / <code>res.download(path)</code></td><td>identical</td></tr><tr><td><code>req.accepts()</code> / <code>res.format()</code></td><td>identical</td></tr><tr><td><code>next(err)</code></td><td>identical</td></tr><tr><td><code>app.use((err, req, res, next) =&gt; {})</code></td><td>identical</td></tr><tr><td><code>app.listen(port, cb)</code></td><td>identical; returns the <code>http.Server</code></td></tr></tbody></table></div>
+<p>The <code>cors</code>, <code>compression</code>, <code>express-rate-limit</code>, <code>morgan</code>, <code>cookie-parser</code> and <code>serve-static</code> imports disappear. Their equivalents are exported by <code>routiva</code> and used the same way.</p>
+<h2 id="same-shape-less-ceremony">Same shape, less ceremony<a class="anchor" href="#same-shape-less-ceremony" aria-hidden="true">#</a></h2>
+<p>A users endpoint in Express, with the packages it needs:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> express <span class="tok-kw">from</span> <span class="tok-str">&#39;express&#39;</span>;
+<span class="tok-kw">import</span> cors <span class="tok-kw">from</span> <span class="tok-str">&#39;cors&#39;</span>;
+<span class="tok-kw">import</span> compression <span class="tok-kw">from</span> <span class="tok-str">&#39;compression&#39;</span>;
+
+<span class="tok-kw">const</span> app = <span class="tok-fn">express</span>();
+app.<span class="tok-fn">use</span>(<span class="tok-fn">cors</span>());
+app.<span class="tok-fn">use</span>(<span class="tok-fn">compression</span>());
+app.<span class="tok-fn">use</span>(express.<span class="tok-fn">json</span>());
+
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/users/:id&#39;</span>, <span class="tok-kw">async</span> (req, res, next) =&gt; {
+  <span class="tok-kw">try</span> {
+    <span class="tok-kw">const</span> user = <span class="tok-kw">await</span> db.<span class="tok-fn">find</span>(req.<span class="tok-prop">params</span>.<span class="tok-prop">id</span>);
+    <span class="tok-kw">if</span> (!user) <span class="tok-kw">return</span> res.<span class="tok-fn">status</span>(<span class="tok-num">404</span>).<span class="tok-fn">json</span>({ error: <span class="tok-str">&#39;not found&#39;</span> });
+    res.<span class="tok-fn">json</span>(user);
+  } <span class="tok-kw">catch</span> (err) {
+    <span class="tok-fn">next</span>(err);          <span class="tok-com">// Express 4 needs this</span>
+  }
+});
+
+app.<span class="tok-fn">listen</span>(<span class="tok-num">3000</span>);</code></pre></div>
+<p>The routiva version:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { createApp, cors, compress, json } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> app = <span class="tok-fn">createApp</span>();
+app.<span class="tok-fn">use</span>(<span class="tok-fn">cors</span>());
+app.<span class="tok-fn">use</span>(<span class="tok-fn">compress</span>());
+app.<span class="tok-fn">use</span>(<span class="tok-fn">json</span>());
+
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/users/:id&#39;</span>, <span class="tok-kw">async</span> (req, res) =&gt; {
+  <span class="tok-kw">const</span> user = <span class="tok-kw">await</span> db.<span class="tok-fn">find</span>(req.<span class="tok-prop">params</span>.<span class="tok-prop">id</span>);   <span class="tok-com">// a rejection is forwarded</span>
+  <span class="tok-kw">if</span> (!user) <span class="tok-kw">return</span> res.<span class="tok-fn">status</span>(<span class="tok-num">404</span>).<span class="tok-fn">json</span>({ error: <span class="tok-str">&#39;not found&#39;</span> });
+  res.<span class="tok-fn">json</span>(user);
+});
+
+app.<span class="tok-fn">listen</span>(<span class="tok-num">3000</span>);</code></pre></div>
+<p>The route body does not change. The <code>try/catch</code>, the extra imports and the separate packages do.</p>
+<h2 id="what-differs">What differs<a class="anchor" href="#what-differs" aria-hidden="true">#</a></h2>
+<h3 id="async-errors-are-handled-for-you">Async errors are handled for you<a class="anchor" href="#async-errors-are-handled-for-you" aria-hidden="true">#</a></h3>
+<p>Express 4 only forwards synchronous throws to error middleware. A rejected promise inside an <code>async</code> handler hangs the request unless you wrap it. routiva attaches <code>.catch(next)</code> to the value every handler returns, so <code>throw</code> and <code>Promise.reject</code> both reach your error middleware. Express 5 catches async errors too; routiva matches that behaviour.</p>
+<h3 id="405-with-an-allow-header">405 with an Allow header<a class="anchor" href="#405-with-an-allow-header" aria-hidden="true">#</a></h3>
+<p>If a path matches but the method does not, routiva answers <code>405 Method Not Allowed</code> with a correct <code>Allow</code> header. Express returns <code>404</code>. For a path that exists, routiva answers <code>OPTIONS</code> automatically with <code>204</code> and the same <code>Allow</code> list, and <code>HEAD</code> reuses the matching <code>GET</code> route with the body suppressed.</p>
+<h3 id="one-response-once">One response, once<a class="anchor" href="#one-response-once" aria-hidden="true">#</a></h3>
+<p><code>res.send()</code> and <code>res.json()</code> are guarded by <code>res.raw.headersSent</code> and <code>res.raw.writableEnded</code>. A stray second <code>res.json()</code> is a no-op instead of an <code>ERR_HTTP_HEADERS_SENT</code> crash.</p>
+<h3 id="body-parse-errors-have-stable-types">Body parse errors have stable types<a class="anchor" href="#body-parse-errors-have-stable-types" aria-hidden="true">#</a></h3>
+<p><code>json()</code> rejects a body that is not an object or array with <code>400 entity.parse.failed</code>, and an oversized body with <code>413 entity.too.large</code>. The <code>type</code> value is set on the error, so one error handler can map both.</p>
+<h3 id="no-template-engine-or-view-system">No template engine or view system<a class="anchor" href="#no-template-engine-or-view-system" aria-hidden="true">#</a></h3>
+<p>There is no <code>res.render()</code>, no <code>app.set(&#39;view engine&#39;, ...)</code>, no views directory, no view cache and no <code>app.locals</code>. If your app renders HTML on the server, keep Express or render it yourself and call <code>res.send()</code>. One minor detail: <code>res.locals</code> exists as an empty object on each response, but nothing in the framework reads it for you.</p>
+<h3 id="smaller-path-syntax">Smaller path syntax<a class="anchor" href="#smaller-path-syntax" aria-hidden="true">#</a></h3>
+<p>routiva supports <code>:name</code> parameters and a <code>*</code> wildcard. Express also supports optional parameters (<code>:id?</code>), inline regex (<code>:id(\d+)</code>) and arrays of paths. Port those by validating inside <code>router.param()</code> or the handler.</p>
+<h2 id="where-express-still-wins">Where Express still wins<a class="anchor" href="#where-express-still-wins" aria-hidden="true">#</a></h2>
+<ul><li><strong>Ecosystem.</strong> Thousands of mature middlewares, adapters and integrations.</li><li><strong>Rendering.</strong> Any template engine via <code>res.render()</code>.</li><li><strong>Sessions, flash, auth.</strong> Passport and its strategies are Express-shaped.</li><li><strong>Advanced routing.</strong> Optional params, regex params and path arrays.</li><li><strong>Streaming compression.</strong> routiva compresses buffered <code>res.send()</code> output; streamed files pass through untouched. Express&#39;s <code>compression</code> wraps the whole response stream.</li><li><strong>Track record.</strong> Express has years of production hardening. routiva is a compact, well-tested implementation.</li></ul>
+<p>Use Express when the ecosystem is doing real work for you. Use routiva when you want the same mental model inside a core you can read end to end.</p>
+<h2 id="a-migration-checklist">A migration checklist<a class="anchor" href="#a-migration-checklist" aria-hidden="true">#</a></h2>
+<ol><li>Replace <code>express()</code> with <code>createApp()</code> and swap <code>require</code> for an import.</li><li>Move CORS, compression and rate limiting to routiva&#39;s bundled factories.</li><li>Drop <code>cookie-parser</code>; <code>req.cookies</code> is already parsed.</li><li>Replace <code>express.json()</code> with <code>json({ limit: &#39;100kb&#39; })</code>.</li><li>Delete the <code>try/catch</code> plus <code>next(err)</code> wrappers around async handlers.</li><li>Replace <code>res.render()</code> call sites before you start.</li><li>Run your suite against the new app. Most handler bodies will not have changed.</li></ol>
+</div>
+          <nav class="pager"><a class="" href="performance.html"><span class="dir">Previous</span><span class="t">Performance</span></a><a class="next" href="faq.html"><span class="dir">Next</span><span class="t">FAQ &amp; roadmap</span></a></nav>
+        </article>
+        <aside class="docs-toc" id="docsToc" aria-label="On this page"><div class="toc-label">On this page</div><a href="#the-mental-model-is-unchanged">The mental model is unchanged</a><a href="#api-mapping">API mapping</a><a href="#same-shape-less-ceremony">Same shape, less ceremony</a><a href="#what-differs">What differs</a><a class="h3" href="#async-errors-are-handled-for-you">Async errors are handled for you</a><a class="h3" href="#405-with-an-allow-header">405 with an Allow header</a><a class="h3" href="#one-response-once">One response, once</a><a class="h3" href="#body-parse-errors-have-stable-types">Body parse errors have stable types</a><a class="h3" href="#no-template-engine-or-view-system">No template engine or view system</a><a class="h3" href="#smaller-path-syntax">Smaller path syntax</a><a href="#where-express-still-wins">Where Express still wins</a><a href="#a-migration-checklist">A migration checklist</a></aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="docs-search-overlay" id="docsSearch" role="dialog" aria-modal="true" aria-label="Search documentation" hidden>
+    <div class="docs-search-modal">
+      <div class="docs-search-input-row">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="docsSearchInput" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
+        <span class="kbd">Esc</span>
+      </div>
+      <div class="docs-search-results" id="docsSearchResults"></div>
+      <div class="docs-search-foot">
+        <span><span class="kbd">↑</span><span class="kbd">↓</span> navigate</span>
+        <span><span class="kbd">↵</span> open</span>
+        <span><span class="kbd">Esc</span> close</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

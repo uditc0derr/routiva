@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Routing · routiva docs</title>
+  <meta name="description" content="Define routes, capture :params and * wildcards, mount sub-routers, and understand exactly how a path is matched.">
+  <meta name="theme-color" content="#0a0a0b">
+  <meta name="generator" content="routiva docs">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="routiva">
+  <meta property="og:title" content="Routing · routiva docs">
+  <meta property="og:description" content="Define routes, capture :params and * wildcards, mount sub-routers, and understand exactly how a path is matched.">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#doc-content">Skip to content</a>
+
+  <header class="docs-topbar">
+    <button class="docs-menu-btn" id="docsMenuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="docsSidebar">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="nav-logo" href="/">
+      <span class="logo-mark">r</span>
+      <span class="logo-text">routiva</span>
+      <span class="logo-tag">docs</span>
+    </a>
+    <button class="docs-search-trigger" id="docsSearchTrigger" aria-label="Search documentation">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span class="docs-search-label">Search docs</span>
+      <span class="kbd">⌘K</span>
+    </button>
+    <nav class="docs-topbar-links">
+      <a href="/">Home</a>
+      <a class="hide-sm" href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub</a>
+      <a class="hide-sm" href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm</a>
+    </nav>
+  </header>
+
+  <div class="docs-body">
+    <aside class="docs-sidebar" id="docsSidebar">
+      <nav class="docs-nav" aria-label="Documentation">
+        <div class="docs-nav-section"><div class="docs-nav-label">Introduction</div><a class="docs-nav-link" href="getting-started.html">Getting started</a><a class="docs-nav-link" href="installation.html">Installation</a><a class="docs-nav-link" href="quick-start.html">Quick start</a></div><div class="docs-nav-section"><div class="docs-nav-label">Core concepts</div><a class="docs-nav-link" href="core-concepts.html">Core concepts</a><a class="docs-nav-link active" href="routing.html">Routing</a><a class="docs-nav-link" href="middleware.html">Middleware</a><a class="docs-nav-link" href="request-response.html">Request &amp; Response</a><a class="docs-nav-link" href="body-parsing.html">Body parsing</a><a class="docs-nav-link" href="static-files.html">Static files</a><a class="docs-nav-link" href="error-handling.html">Error handling</a></div><div class="docs-nav-section"><div class="docs-nav-label">Built-in middleware</div><a class="docs-nav-link" href="cors.html">CORS</a><a class="docs-nav-link" href="compression.html">Compression</a><a class="docs-nav-link" href="rate-limiting.html">Rate limiting</a><a class="docs-nav-link" href="logging.html">Logging</a></div><div class="docs-nav-section"><div class="docs-nav-label">Guides</div><a class="docs-nav-link" href="examples.html">Examples</a><a class="docs-nav-link" href="testing.html">Testing</a><a class="docs-nav-link" href="performance.html">Performance</a><a class="docs-nav-link" href="express-comparison.html">Coming from Express</a><a class="docs-nav-link" href="faq.html">FAQ &amp; roadmap</a></div><div class="docs-nav-section"><div class="docs-nav-label">Reference</div><a class="docs-nav-link" href="api-reference.html">API reference</a><a class="docs-nav-link" href="architecture.html">Architecture</a></div>
+      </nav>
+      <div class="docs-sidebar-foot">
+        <a href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm ↗</a>
+        <a href="https://github.com/uditc0derr/routiva/blob/main/LICENSE" target="_blank" rel="noopener">MIT ↗</a>
+      </div>
+    </aside>
+    <div class="docs-scrim" id="docsScrim"></div>
+
+    <main class="docs-main" id="doc-content">
+      <div class="docs-main-inner">
+        <article class="docs-article">
+          <header class="docs-article-head">
+            <div class="docs-eyebrow">Core concepts</div>
+            <h1>Routing</h1>
+            <p class="docs-lede">Define routes, capture :params and * wildcards, mount sub-routers, and understand exactly how a path is matched.</p>
+          </header>
+          <div class="docs-prose"><h2 id="the-route-methods">The route methods<a class="anchor" href="#the-route-methods" aria-hidden="true">#</a></h2>
+<p>Every HTTP method has a matching method on the app (and on a <code>Router</code>):</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { createApp } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> app = <span class="tok-fn">createApp</span>();
+
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/users&#39;</span>, (req, res) =&gt; res.<span class="tok-fn">json</span>([]));
+app.<span class="tok-fn">post</span>(<span class="tok-str">&#39;/users&#39;</span>, (req, res) =&gt; res.<span class="tok-fn">status</span>(<span class="tok-num">201</span>).<span class="tok-fn">json</span>(req.<span class="tok-prop">body</span>));
+app.<span class="tok-fn">put</span>(<span class="tok-str">&#39;/users/:id&#39;</span>, replaceUser);
+app.<span class="tok-fn">patch</span>(<span class="tok-str">&#39;/users/:id&#39;</span>, patchUser);
+app.<span class="tok-kw">delete</span>(<span class="tok-str">&#39;/users/:id&#39;</span>, deleteUser);
+app.<span class="tok-fn">head</span>(<span class="tok-str">&#39;/users/:id&#39;</span>, headUser);
+app.<span class="tok-fn">options</span>(<span class="tok-str">&#39;/users/:id&#39;</span>, optionsUser);
+app.<span class="tok-fn">all</span>(<span class="tok-str">&#39;/ping&#39;</span>, (req, res) =&gt; res.<span class="tok-fn">send</span>(<span class="tok-str">&#39;pong&#39;</span>));</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Method</th><th>Registers</th></tr></thead><tbody><tr><td><code>get</code> <code>post</code> <code>put</code> <code>patch</code> <code>delete</code> <code>head</code> <code>options</code></td><td>A route for that one method</td></tr><tr><td><code>all</code></td><td>A route for <strong>every</strong> method (stored with a <code>null</code> method)</td></tr><tr><td><code>use</code></td><td>Middleware (see <a href="middleware.html">Middleware</a>)</td></tr></tbody></table></div>
+<p>A route only runs when both the path and the method match. <code>HEAD</code> is special: it is served by a matching <code>GET</code> route, with the body suppressed. See <a href="#head-options-and-405">HEAD, OPTIONS and 405</a>.</p>
+<h2 id="more-than-one-handler-per-route">More than one handler per route<a class="anchor" href="#more-than-one-handler-per-route" aria-hidden="true">#</a></h2>
+<p>Any number of handlers can be registered for one path. Each becomes its own layer sharing the same compiled pattern, so they run in order:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/reports/:id&#39;</span>, requireAuth, loadReport, (req, res) =&gt; {
+  res.<span class="tok-fn">json</span>(req.<span class="tok-prop">report</span>);
+});</code></pre></div>
+<p><code>requireAuth</code> runs first, calls <code>next()</code> to continue, then <code>loadReport</code>, then the final handler. Arrays are flattened, so <code>app.get(&#39;/x&#39;, [a, b], c)</code> works too. This is the same trick Express uses for route-level middleware.</p>
+<h2 id="path-parameters">Path parameters<a class="anchor" href="#path-parameters" aria-hidden="true">#</a></h2>
+<p>A <code>:name</code> segment captures one path segment (everything up to the next <code>/</code>):</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/users/:id&#39;</span>, (req, res) =&gt; {
+  res.<span class="tok-fn">json</span>({ id: req.<span class="tok-prop">params</span>.<span class="tok-prop">id</span> });
+});</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Pattern</th><th>Request</th><th>Match?</th><th><code>req.params</code></th></tr></thead><tbody><tr><td><code>/users/:id</code></td><td><code>/users/42</code></td><td>✅</td><td><code>{ id: &#39;42&#39; }</code></td></tr><tr><td><code>/users/:id</code></td><td><code>/users/42/</code></td><td>✅</td><td><code>{ id: &#39;42&#39; }</code> (trailing slash tolerated)</td></tr><tr><td><code>/users/:id</code></td><td><code>/users/42/posts</code></td><td>❌</td><td>—</td></tr><tr><td><code>/users/:id</code></td><td><code>/users/a%20b</code></td><td>✅</td><td><code>{ id: &#39;a b&#39; }</code> (decoded)</td></tr><tr><td><code>/users/:id/posts/:postId</code></td><td><code>/users/7/posts/9</code></td><td>✅</td><td><code>{ id: &#39;7&#39;, postId: &#39;9&#39; }</code></td></tr></tbody></table></div>
+<p>Captured values are URL-decoded with a safe wrapper, so a malformed escape such as <code>%E0%A4</code> is left as-is instead of throwing a <code>500</code>.</p>
+<p>Params from an outer layer and an inner layer are <strong>merged</strong>, with the inner value winning. When a mounted router matches <code>:tenant</code> and a route inside it matches <code>:id</code>, the handler sees both.</p>
+<div class="codeblock" data-lang="text"><div class="codeblock-head"><span class="lang">text</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.use(&#39;/t/:tenant&#39;, router)      // captures { tenant }
+  router.get(&#39;/u/:id&#39;, handler)    // captures { id }
+                                   // handler sees { tenant, id }</code></pre></div>
+<p>routiva supports <strong>required</strong> <code>:name</code> segments only. Optional (<code>:id?</code>), inline regex (<code>:id(\\d+)</code>) and arrays of paths are not part of the syntax — validate inside a <a href="#routerparam"><code>param()</code> callback</a> or the handler instead.</p>
+<h2 id="wildcards">Wildcards<a class="anchor" href="#wildcards" aria-hidden="true">#</a></h2>
+<p><code>*</code> captures the rest of the path (including slashes) under the key <code>wildcard</code>:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/files/*&#39;</span>, (req, res) =&gt; {
+  res.<span class="tok-fn">json</span>({ path: req.<span class="tok-prop">params</span>.<span class="tok-prop">wildcard</span> });
+});</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Pattern</th><th>Request</th><th><code>req.params.wildcard</code></th></tr></thead><tbody><tr><td><code>/files/*</code></td><td><code>/files/a/b/c.txt</code></td><td><code>&#39;a/b/c.txt&#39;</code></td></tr><tr><td><code>/files/*</code></td><td><code>/files/</code></td><td><code>&#39;&#39;</code></td></tr><tr><td><code>*</code></td><td><code>/anything/at/all</code></td><td><code>&#39;anything/at/all&#39;</code></td></tr></tbody></table></div>
+<p>A bare <code>*</code> route is the usual single-page-app or catch-all fallback, and is matched with the lowest priority because it is registered last:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;*&#39;</span>, (req, res) =&gt; res.<span class="tok-fn">sendFile</span>(<span class="tok-str">&#39;dist/index.html&#39;</span>));</code></pre></div>
+<h2 id="how-a-path-is-compiled">How a path is compiled<a class="anchor" href="#how-a-path-is-compiled" aria-hidden="true">#</a></h2>
+<p>Patterns are compiled to a <code>RegExp</code> <strong>once, at registration</strong>, and reused for every request. <code>compile(pattern, end)</code> in <code>src/router.js</code> normalises the leading and trailing slashes, splits on <code>:name</code> and <code>*</code>, regex-escapes the literals, and turns <code>:name</code> into <code>([^/]+)</code> and <code>*</code> into <code>(.*)</code>.</p>
+<div class="codeblock" data-lang="text"><div class="codeblock-head"><span class="lang">text</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>/users/:id     end → /^\/users\/([^/]+)\/?$/     exact
+/files/*       end → /^\/files\/(.*)\/?$/        exact
+/api  (mount)  end → /^\/api(?=\/|$)/            prefix
+/              end → /^\/?$/    prefix → /^/</code></pre></div>
+<p>Two details matter:</p>
+<ul><li><strong>Routes use an exact match</strong> that tolerates a trailing slash (<code>^…/?$</code>).</li><li><strong>Mounted middleware uses a prefix match</strong> with a lookahead (<code>^…(?=/|$)</code>), so <code>/api</code> matches <code>/api</code> and <code>/api/users</code> but not <code>/apis</code>.</li></ul>
+<p>Matching is <strong>case-sensitive</strong>: <code>/Users</code> and <code>/users</code> are different paths.</p>
+<p>The captured names are stored in a <code>keys</code> array alongside the regex, and zipped back onto the match at request time, so parameter order is preserved.</p>
+<h2 id="mounted-routers">Mounted routers<a class="anchor" href="#mounted-routers" aria-hidden="true">#</a></h2>
+<p>A <code>Router</code> is a self-contained stack you can mount on a path:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { App, Router } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> api = <span class="tok-kw">new</span> <span class="tok-fn">Router</span>();
+api.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/status&#39;</span>, (req, res) =&gt; res.<span class="tok-fn">json</span>({ status: <span class="tok-str">&#39;ok&#39;</span> }));
+
+<span class="tok-kw">const</span> app = <span class="tok-kw">new</span> <span class="tok-fn">App</span>();
+app.<span class="tok-fn">use</span>(<span class="tok-str">&#39;/api&#39;</span>, api);</code></pre></div>
+<p><code>app.use(&#39;/api&#39;, api)</code> mounts the router at the <code>/api</code> prefix. When a request reaches it, the prefix is <strong>stripped</strong> before the inner router runs, so the router above sees <code>/status</code>, not <code>/api/status</code> — exactly like an Express sub-app. The original <code>req.path</code>, <code>req.url</code>, <code>req.params</code> and <code>req.route</code> are saved and <strong>restored</strong> the moment the mounted layer calls <code>next()</code>, so an outer route can continue where the inner router left off.</p>
+<p>Routers nest: mount a router inside a router, and each prefix is stripped and restored in turn.</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">const</span> admin = <span class="tok-kw">new</span> <span class="tok-fn">Router</span>();
+admin.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/users&#39;</span>, (req, res) =&gt; res.<span class="tok-fn">json</span>({ scope: <span class="tok-str">&#39;admin&#39;</span> }));
+
+<span class="tok-kw">const</span> v1 = <span class="tok-kw">new</span> <span class="tok-fn">Router</span>();
+v1.<span class="tok-fn">use</span>(<span class="tok-str">&#39;/admin&#39;</span>, admin);          <span class="tok-com">// /v1/admin/users</span>
+
+app.<span class="tok-fn">use</span>(<span class="tok-str">&#39;/v1&#39;</span>, v1);</code></pre></div>
+<h2 id="routerroute">router.route()<a class="anchor" href="#routerroute" aria-hidden="true">#</a></h2>
+<p>Register several methods for one path with a chainable builder:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">route</span>(<span class="tok-str">&#39;/items&#39;</span>)
+  .<span class="tok-fn">get</span>(listItems)
+  .<span class="tok-fn">post</span>(createItem)
+  .<span class="tok-kw">delete</span>(clearItems);</code></pre></div>
+<p>The chain exposes <code>get</code>, <code>post</code>, <code>put</code>, <code>patch</code>, <code>delete</code>, <code>head</code>, <code>options</code> and <code>all</code>, and every call returns the chain so calls can be stacked.</p>
+<h2 id="routerparam">router.param()<a class="anchor" href="#routerparam" aria-hidden="true">#</a></h2>
+<p><code>param(name, fn)</code> registers a callback that runs whenever <code>name</code> appears in a <strong>matched route&#39;s</strong> parameters, before that route&#39;s handlers:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { HttpError } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+app.<span class="tok-fn">param</span>(<span class="tok-str">&#39;id&#39;</span>, (req, res, next, id, name) =&gt; {
+  <span class="tok-kw">if</span> (!/^\d+$/.<span class="tok-fn">test</span>(id)) {
+    <span class="tok-kw">return</span> <span class="tok-fn">next</span>(<span class="tok-kw">new</span> <span class="tok-fn">HttpError</span>(<span class="tok-num">400</span>, <span class="tok-str">`${name} must be numeric`</span>));
+  }
+  req.<span class="tok-prop">userId</span> = <span class="tok-fn">Number</span>(id);
+  <span class="tok-fn">next</span>();
+});
+
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/users/:id&#39;</span>, (req, res) =&gt; {
+  res.<span class="tok-fn">json</span>({ id: req.<span class="tok-prop">userId</span> });   <span class="tok-com">// already validated and coerced</span>
+});</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Argument</th><th>Meaning</th></tr></thead><tbody><tr><td><code>req</code>, <code>res</code></td><td>The wrapped request and response</td></tr><tr><td><code>next</code></td><td>Continue to the route handler, or <code>next(err)</code> to fail</td></tr><tr><td><code>value</code></td><td>The decoded parameter value</td></tr><tr><td><code>name</code></td><td>The parameter name</td></tr></tbody></table></div>
+<p>Callbacks are looked up on the router that <strong>registered</strong> the route, so a mounted router&#39;s params use its own callbacks. They run in parameter-name order, and a <code>next(err)</code> from any of them short-circuits straight to the error chain.</p>
+<h2 id="head-options-and-405">HEAD, OPTIONS and 405<a class="anchor" href="#head-options-and-405" aria-hidden="true">#</a></h2>
+<p>routiva handles the request-method corners of HTTP for you:</p>
+<ul><li><strong><code>HEAD</code></strong> is served by a matching <code>GET</code> route. Headers (including <code>Content-Length</code>) are computed as usual; the body is suppressed.</li><li><strong><code>OPTIONS</code></strong> on a known path is answered automatically with <code>204</code> and an <code>Allow</code> header listing the allowed methods.</li><li>A path that matches but a method that does not produces <strong><code>405 Method Not Allowed</code></strong> with the same <code>Allow</code> header — not a <code>404</code>.</li></ul>
+<p>The allowed list is recorded while the stack is scanned. When a <code>GET</code> route exists, <code>HEAD</code> is recorded with it, so a <code>GET</code>-only path reports <code>Allow: GET, HEAD, OPTIONS</code>.</p>
+<div class="codeblock" data-lang="http"><div class="codeblock-head"><span class="lang">http</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-method">OPTIONS</span> /users HTTP/1.1
+
+HTTP/1.1 <span class="tok-num">204</span> No Content
+<span class="tok-attr">Allow</span>: <span class="tok-method">GET</span>, <span class="tok-method">HEAD</span>, <span class="tok-method">OPTIONS</span>, <span class="tok-method">POST</span></code></pre></div>
+<p>If you want to answer <code>OPTIONS</code> yourself, register a route for it; it matches before the built-in fallback. CORS middleware answers its own preflights too, which takes precedence — see <a href="cors.html">CORS</a>.</p>
+<h2 id="registration-order-is-execution-order">Registration order is execution order<a class="anchor" href="#registration-order-is-execution-order" aria-hidden="true">#</a></h2>
+<p>Routes and middleware share one ordered stack, so the first matching layer that responds wins. Register specific routes before catch-alls, and API routes before a static or SPA fallback:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/api/users&#39;</span>, listUsers);              <span class="tok-com">// matched first</span>
+app.<span class="tok-fn">use</span>(<span class="tok-fn">serveStatic</span>(<span class="tok-str">&#39;public&#39;</span>, { extensions: [<span class="tok-str">&#39;html&#39;</span>] }));
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;*&#39;</span>, (req, res) =&gt; res.<span class="tok-fn">sendFile</span>(<span class="tok-str">&#39;dist/index.html&#39;</span>));  <span class="tok-com">// last resort</span></code></pre></div>
+<h2 id="a-complete-router">A complete router<a class="anchor" href="#a-complete-router" aria-hidden="true">#</a></h2>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { App, Router, HttpError } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> app = <span class="tok-kw">new</span> <span class="tok-fn">App</span>();
+
+<span class="tok-com">// Validate and coerce :id once for every route that uses it.</span>
+app.<span class="tok-fn">param</span>(<span class="tok-str">&#39;id&#39;</span>, (req, res, next, id) =&gt; {
+  <span class="tok-kw">if</span> (!/^\d+$/.<span class="tok-fn">test</span>(id)) <span class="tok-kw">return</span> <span class="tok-fn">next</span>(<span class="tok-kw">new</span> <span class="tok-fn">HttpError</span>(<span class="tok-num">400</span>, <span class="tok-str">&#39;id must be numeric&#39;</span>));
+  req.<span class="tok-prop">itemId</span> = <span class="tok-fn">Number</span>(id);
+  <span class="tok-fn">next</span>();
+});
+
+app.<span class="tok-fn">route</span>(<span class="tok-str">&#39;/items&#39;</span>)
+  .<span class="tok-fn">get</span>((req, res) =&gt; res.<span class="tok-fn">json</span>([]))
+  .<span class="tok-fn">post</span>((req, res) =&gt; res.<span class="tok-fn">status</span>(<span class="tok-num">201</span>).<span class="tok-fn">json</span>(req.<span class="tok-prop">body</span>));
+
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/items/:id&#39;</span>, (req, res) =&gt; {
+  res.<span class="tok-fn">json</span>({ id: req.<span class="tok-prop">itemId</span> });
+});
+
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/files/*&#39;</span>, (req, res) =&gt; {
+  res.<span class="tok-fn">json</span>({ file: req.<span class="tok-prop">params</span>.<span class="tok-prop">wildcard</span> });
+});
+
+<span class="tok-com">// Mounted sub-router, prefix stripped to &quot;/v1&quot;</span>
+<span class="tok-kw">const</span> v1 = <span class="tok-kw">new</span> <span class="tok-fn">Router</span>();
+v1.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/ping&#39;</span>, (req, res) =&gt; res.<span class="tok-fn">json</span>({ pong: <span class="tok-kw">true</span> }));
+app.<span class="tok-fn">use</span>(<span class="tok-str">&#39;/v1&#39;</span>, v1);
+
+app.<span class="tok-fn">listen</span>(<span class="tok-num">3000</span>);</code></pre></div>
+<h2 id="where-to-go-next">Where to go next<a class="anchor" href="#where-to-go-next" aria-hidden="true">#</a></h2>
+<div class="table-wrap"><table><thead><tr><th>If you want to…</th><th>Read</th></tr></thead><tbody><tr><td>Write your own middleware</td><td><a href="middleware.html">Middleware</a></td></tr><tr><td>Use <code>req</code> and <code>res</code> in full</td><td><a href="request-response.html">Request &amp; Response</a></td></tr><tr><td>Route errors to handlers</td><td><a href="error-handling.html">Error handling</a></td></tr><tr><td>Serve files and SPA fallbacks</td><td><a href="static-files.html">Static files</a></td></tr></tbody></table></div>
+</div>
+          <nav class="pager"><a class="" href="core-concepts.html"><span class="dir">Previous</span><span class="t">Core concepts</span></a><a class="next" href="middleware.html"><span class="dir">Next</span><span class="t">Middleware</span></a></nav>
+        </article>
+        <aside class="docs-toc" id="docsToc" aria-label="On this page"><div class="toc-label">On this page</div><a href="#the-route-methods">The route methods</a><a href="#more-than-one-handler-per-route">More than one handler per route</a><a href="#path-parameters">Path parameters</a><a href="#wildcards">Wildcards</a><a href="#how-a-path-is-compiled">How a path is compiled</a><a href="#mounted-routers">Mounted routers</a><a href="#routerroute">router.route()</a><a href="#routerparam">router.param()</a><a href="#head-options-and-405">HEAD, OPTIONS and 405</a><a href="#registration-order-is-execution-order">Registration order is execution order</a><a href="#a-complete-router">A complete router</a><a href="#where-to-go-next">Where to go next</a></aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="docs-search-overlay" id="docsSearch" role="dialog" aria-modal="true" aria-label="Search documentation" hidden>
+    <div class="docs-search-modal">
+      <div class="docs-search-input-row">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="docsSearchInput" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
+        <span class="kbd">Esc</span>
+      </div>
+      <div class="docs-search-results" id="docsSearchResults"></div>
+      <div class="docs-search-foot">
+        <span><span class="kbd">↑</span><span class="kbd">↓</span> navigate</span>
+        <span><span class="kbd">↵</span> open</span>
+        <span><span class="kbd">Esc</span> close</span>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/docs.js"></script>
+</body>
+</html>

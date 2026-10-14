@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Performance · routiva docs</title>
+  <meta name="description" content="Why routiva stays fast — compiled routes, a linear dispatch scan, streaming I/O — and how to benchmark your own workload.">
+  <meta name="theme-color" content="#0a0a0b">
+  <meta name="generator" content="routiva docs">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="routiva">
+  <meta property="og:title" content="Performance · routiva docs">
+  <meta property="og:description" content="Why routiva stays fast — compiled routes, a linear dispatch scan, streaming I/O — and how to benchmark your own workload.">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/assets/styles-0S-izC94.js"></script>
+  <script type="module" crossorigin src="/assets/docs-DJN-6ILu.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/styles-DlVBLwF3.css">
+</head>
+<body>
+  <a class="skip-link" href="#doc-content">Skip to content</a>
+
+  <header class="docs-topbar">
+    <button class="docs-menu-btn" id="docsMenuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="docsSidebar">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="nav-logo" href="/">
+      <span class="logo-mark">r</span>
+      <span class="logo-text">routiva</span>
+      <span class="logo-tag">docs</span>
+    </a>
+    <button class="docs-search-trigger" id="docsSearchTrigger" aria-label="Search documentation">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span class="docs-search-label">Search docs</span>
+      <span class="kbd">⌘K</span>
+    </button>
+    <nav class="docs-topbar-links">
+      <a href="/">Home</a>
+      <a class="hide-sm" href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub</a>
+      <a class="hide-sm" href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm</a>
+    </nav>
+  </header>
+
+  <div class="docs-body">
+    <aside class="docs-sidebar" id="docsSidebar">
+      <nav class="docs-nav" aria-label="Documentation">
+        <div class="docs-nav-section"><div class="docs-nav-label">Introduction</div><a class="docs-nav-link" href="getting-started.html">Getting started</a><a class="docs-nav-link" href="installation.html">Installation</a><a class="docs-nav-link" href="quick-start.html">Quick start</a></div><div class="docs-nav-section"><div class="docs-nav-label">Core concepts</div><a class="docs-nav-link" href="core-concepts.html">Core concepts</a><a class="docs-nav-link" href="routing.html">Routing</a><a class="docs-nav-link" href="middleware.html">Middleware</a><a class="docs-nav-link" href="request-response.html">Request &amp; Response</a><a class="docs-nav-link" href="body-parsing.html">Body parsing</a><a class="docs-nav-link" href="static-files.html">Static files</a><a class="docs-nav-link" href="error-handling.html">Error handling</a></div><div class="docs-nav-section"><div class="docs-nav-label">Built-in middleware</div><a class="docs-nav-link" href="cors.html">CORS</a><a class="docs-nav-link" href="compression.html">Compression</a><a class="docs-nav-link" href="rate-limiting.html">Rate limiting</a><a class="docs-nav-link" href="logging.html">Logging</a></div><div class="docs-nav-section"><div class="docs-nav-label">Guides</div><a class="docs-nav-link" href="examples.html">Examples</a><a class="docs-nav-link" href="testing.html">Testing</a><a class="docs-nav-link active" href="performance.html">Performance</a><a class="docs-nav-link" href="express-comparison.html">Coming from Express</a><a class="docs-nav-link" href="faq.html">FAQ &amp; roadmap</a></div><div class="docs-nav-section"><div class="docs-nav-label">Reference</div><a class="docs-nav-link" href="api-reference.html">API reference</a><a class="docs-nav-link" href="architecture.html">Architecture</a></div>
+      </nav>
+      <div class="docs-sidebar-foot">
+        <a href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm ↗</a>
+        <a href="https://github.com/uditc0derr/routiva/blob/main/LICENSE" target="_blank" rel="noopener">MIT ↗</a>
+      </div>
+    </aside>
+    <div class="docs-scrim" id="docsScrim"></div>
+
+    <main class="docs-main" id="doc-content">
+      <div class="docs-main-inner">
+        <article class="docs-article">
+          <header class="docs-article-head">
+            <div class="docs-eyebrow">Guides</div>
+            <h1>Performance</h1>
+            <p class="docs-lede">Why routiva stays fast — compiled routes, a linear dispatch scan, streaming I/O — and how to benchmark your own workload.</p>
+          </header>
+          <div class="docs-prose"><h2 id="fast-because-it-is-small">Fast because it is small<a class="anchor" href="#fast-because-it-is-small" aria-hidden="true">#</a></h2>
+<p>routiva does not quote a throughput number, because a number from one machine does not transfer to another. It is quick for a concrete reason: it does little per request. There is no dependency graph to load, no routing table rebuilt on each call, no body buffered that could be streamed, and no compression performed unless the client asked for it.</p>
+<p>This page describes the cost model so you can reason about your own app, then shows how to measure it.</p>
+<h2 id="where-the-time-goes">Where the time goes<a class="anchor" href="#where-the-time-goes" aria-hidden="true">#</a></h2>
+<p>A request touches four things:</p>
+<ol><li><strong>Wrap.</strong> <code>new Request(raw)</code> parses the URL, query string and cookies once.</li><li><strong>Dispatch.</strong> The layer stack is scanned until a layer matches and responds.</li><li><strong>Handler.</strong> Your code runs.</li><li><strong>Serialize.</strong> <code>res.send()</code> writes headers and a body.</li></ol>
+<p>The framework owns steps 1, 2 and 4. Step 2 grows with the number of layers, so the design keeps that scan cheap and predictable.</p>
+<h2 id="routes-compile-once">Routes compile once<a class="anchor" href="#routes-compile-once" aria-hidden="true">#</a></h2>
+<p>Patterns become a <code>RegExp</code> at registration time, never per request. <code>compile(pattern, end)</code> in <code>src/router.js</code>:</p>
+<div class="codeblock" data-lang="text"><div class="codeblock-head"><span class="lang">text</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>/users/:id    -&gt;  /^\/users\/([^/]+)\/?$/    keys: [&#39;id&#39;]
+/files/*      -&gt;  /^\/files\/(.*)\/?$/       keys: [&#39;wildcard&#39;]
+/api (mount)  -&gt;  /^\/api(?=\/|$)/           prefix, not anchored to the end</code></pre></div>
+<p>Literal segments are regex-escaped, <code>:name</code> becomes <code>([^/]+)</code> and <code>*</code> becomes <code>(.*)</code>. The compiled regex and its <code>keys</code> array are stored on the layer and shared by every request. Dispatch only calls <code>layer.regex.exec(req.path)</code>.</p>
+<h2 id="the-dispatch-loop-is-a-linear-scan">The dispatch loop is a linear scan<a class="anchor" href="#the-dispatch-loop-is-a-linear-scan" aria-hidden="true">#</a></h2>
+<p>All routing runs through one function with a shared cursor:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">function</span> <span class="tok-fn">dispatch</span>(stack, req, res, done) {
+  <span class="tok-kw">let</span> index = <span class="tok-num">0</span>;
+  <span class="tok-kw">let</span> finished = <span class="tok-kw">false</span>;
+
+  <span class="tok-kw">function</span> <span class="tok-fn">next</span>(err) {
+    <span class="tok-kw">if</span> (finished) <span class="tok-kw">return</span>;
+    <span class="tok-kw">const</span> wantsError = <span class="tok-fn">Boolean</span>(err);
+
+    <span class="tok-kw">while</span> (index &lt; stack.<span class="tok-prop">length</span>) {
+      <span class="tok-kw">const</span> layer = stack[index++];
+      <span class="tok-kw">if</span> (layer.<span class="tok-prop">isErrorHandler</span> !== wantsError) <span class="tok-kw">continue</span>;
+      <span class="tok-kw">const</span> match = layer.<span class="tok-prop">regex</span>.<span class="tok-fn">exec</span>(req.<span class="tok-prop">path</span>);
+      <span class="tok-kw">if</span> (!match) <span class="tok-kw">continue</span>;
+      <span class="tok-com">// ...method check, then invoke(layer, match, err, req, res, next)</span>
+      <span class="tok-kw">break</span>;
+    }
+    <span class="tok-com">// stack exhausted -&gt; done(err)</span>
+  }
+
+  <span class="tok-fn">next</span>();
+}</code></pre></div>
+<p>Two properties matter:</p>
+<ul><li><strong><code>next()</code> is O(1), not recursive.</strong> The cursor never moves backwards, so a chain of <code>next()</code> calls does not re-scan earlier layers or grow the call stack.</li><li><strong>Error handlers are skipped for free.</strong> During normal flow, four-arity layers are filtered out by a single comparison before the regex is even run.</li></ul>
+<p>Cost is linear in the number of layers that precede the match.</p>
+<h2 id="per-request-allocation">Per-request allocation<a class="anchor" href="#per-request-allocation" aria-hidden="true">#</a></h2>
+<p>The only objects created per request are the two wrappers and the small values they hold:</p>
+<ul><li><code>new Request(raw)</code> reads <code>raw.url</code> with the <code>URL</code> constructor once, then splits <code>query</code> and <code>cookies</code> into plain objects.</li><li><code>new Response(raw, req)</code> stores two references and an empty <code>locals</code> object.</li><li>During dispatch, <code>invoke()</code> merges params into a fresh object and saves the previous values so a mounted router can restore them on <code>next()</code>.</li></ul>
+<p>Nothing clones the stack, and no layer is recompiled.</p>
+<h2 id="compression-costs-cpu-to-save-bytes">Compression costs CPU to save bytes<a class="anchor" href="#compression-costs-cpu-to-save-bytes" aria-hidden="true">#</a></h2>
+<p><code>compress()</code> wraps <code>res.send()</code> and decides per response:</p>
+<div class="codeblock" data-lang="text"><div class="codeblock-head"><span class="lang">text</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>Accept-Encoding: br, gzip  -&gt; pick br, else gzip, else deflate
+body below threshold       -&gt; send as-is
+Content-Type not text-ish  -&gt; send as-is
+already encoded / streamed -&gt; send as-is</code></pre></div>
+<p>The trade is explicit: brotli and gzip burn CPU and latency to shrink a body. The default <code>threshold</code> is <code>1kb</code>, so small responses skip the work entirely. A response the client cannot benefit from (already encoded, an image, a streamed file) is left alone. If compression shows up in a profile, raise <code>threshold</code>, pin <code>level</code>, or gate it with <code>filter(req, res)</code>.</p>
+<p>Because routiva buffers <code>res.send()</code> before compressing, it never wraps a file stream. That keeps <code>sendFile</code> streaming, but large generated bodies are compressed in memory.</p>
+<h2 id="static-files-are-cheap-when-cached">Static files are cheap when cached<a class="anchor" href="#static-files-are-cheap-when-cached" aria-hidden="true">#</a></h2>
+<p><code>send.js</code> stats the file, then:</p>
+<ul><li>sets <code>ETag</code> (<code>W/&quot;size-mtime&quot;</code>) and <code>Last-Modified</code>;</li><li>returns <code>304</code> immediately when <code>If-None-Match</code> or <code>If-Modified-Since</code> says the client copy is fresh;</li><li>sets <code>Cache-Control</code> from <code>maxAge</code> and <code>immutable</code> when configured;</li><li>serves a single <code>Range</code> as <code>206</code> by streaming only that slice.</li></ul>
+<p>The <code>304</code> path is the win: no body, no read of the file contents. Set a long <code>maxAge</code> for immutable assets and let conditional requests do the rest. The <code>stat</code> call itself is a filesystem hit per request; that is the floor for this strategy.</p>
+<h2 id="the-rate-limit-store-is-a-map">The rate limit store is a Map<a class="anchor" href="#the-rate-limit-store-is-a-map" aria-hidden="true">#</a></h2>
+<p><code>MemoryStore</code> is a fixed-window counter keyed by IP:</p>
+<ul><li><code>hit(key)</code> is one <code>Map</code> lookup and an increment;</li><li>expired keys are swept by an interval timer created with <code>.unref()</code>, so the timer never keeps the process alive;</li><li><code>reset()</code> clears one key or the whole store.</li></ul>
+<p>There is no external store. Run more than one process and each keeps its own counters, so a shared limit needs a custom <code>store</code>.</p>
+<h2 id="sendfile-streams">sendFile streams<a class="anchor" href="#sendfile-streams" aria-hidden="true">#</a></h2>
+<p><code>pipeFile()</code> uses <code>createReadStream(path, range).pipe(res.raw)</code>, so memory stays flat regardless of file size. <code>finish</code> and <code>error</code> events resolve a promise, so the surrounding <code>await</code> still sees failures. Byte ranges stream the same way.</p>
+<h2 id="measuring-it">Measuring it<a class="anchor" href="#measuring-it" aria-hidden="true">#</a></h2>
+<p>Measure your app on your hardware. <code>autocannon</code> and <code>wrk</code> are both good:</p>
+<div class="codeblock" data-lang="bash"><div class="codeblock-head"><span class="lang">bash</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">npm</span> install <span class="tok-flag">-g</span> autocannon
+
+<span class="tok-com"># start your app in another shell</span>
+<span class="tok-kw">node</span> server.js
+
+<span class="tok-com"># 10 connections for 10 seconds</span>
+autocannon <span class="tok-flag">-c</span> <span class="tok-num">10</span> <span class="tok-flag">-d</span> <span class="tok-num">10</span> http://<span class="tok-num">127.0</span>.<span class="tok-num">0.1</span>:<span class="tok-num">3000</span>/api/products
+
+<span class="tok-com"># 50 connections, JSON POST bodies</span>
+autocannon <span class="tok-flag">-c</span> <span class="tok-num">50</span> <span class="tok-flag">-d</span> <span class="tok-num">20</span> <span class="tok-flag">-m</span> POST \
+  <span class="tok-flag">-H</span> <span class="tok-str">&quot;content-type=application/json&quot;</span> \
+  <span class="tok-flag">-b</span> <span class="tok-str">&#39;{&quot;name&quot;:&quot;widget&quot;,&quot;sku&quot;:&quot;W-1&quot;,&quot;price&quot;:1}&#39;</span> \
+  http://<span class="tok-num">127.0</span>.<span class="tok-num">0.1</span>:<span class="tok-num">3000</span>/api/products</code></pre></div>
+<p><code>wrk</code> in the same shape:</p>
+<div class="codeblock" data-lang="bash"><div class="codeblock-head"><span class="lang">bash</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>wrk <span class="tok-flag">-t4</span> <span class="tok-flag">-c100</span> <span class="tok-flag">-d30s</span> http://<span class="tok-num">127.0</span>.<span class="tok-num">0.1</span>:<span class="tok-num">3000</span>/health
+wrk <span class="tok-flag">-t4</span> <span class="tok-flag">-c100</span> <span class="tok-flag">-d30s</span> <span class="tok-flag">-s</span> post.lua http://<span class="tok-num">127.0</span>.<span class="tok-num">0.1</span>:<span class="tok-num">3000</span>/api/products</code></pre></div>
+<p>Watch the shape, not just requests per second:</p>
+<div class="table-wrap"><table><thead><tr><th>Signal</th><th>What it tells you</th></tr></thead><tbody><tr><td>requests per second</td><td>throughput at a given concurrency</td></tr><tr><td>latency p99</td><td>tail behaviour under load</td></tr><tr><td>CPU per request</td><td>headroom left for middleware</td></tr><tr><td>RSS and heap</td><td>allocation churn and leaks</td></tr></tbody></table></div>
+<p>Compare against a real Express build of the same app on the same machine. Both sit on <code>node:http</code> and run your handlers, so the difference comes from the framework&#39;s per-request work, not the socket.</p>
+<h2 id="practical-tips">Practical tips<a class="anchor" href="#practical-tips" aria-hidden="true">#</a></h2>
+<ul><li><strong>Register cheap middleware first.</strong> Each layer is one regex test; a path-mounted middleware costs nothing on other routes.</li><li><strong>Gate expensive work by path</strong>, not by checking inside a global handler.</li><li><strong>Set a compression threshold</strong> that matches your typical payload.</li><li><strong>Give static assets a long <code>maxAge</code></strong> and rely on <code>ETag</code> for the rest.</li><li><strong>Stream large files</strong> with <code>serveStatic</code> or <code>res.sendFile</code>, not by reading them into a Buffer.</li><li><strong>Measure before optimizing.</strong> Add <code>logger()</code> and read the duration field, or run <code>autocannon</code>. Do not guess.</li></ul>
+</div>
+          <nav class="pager"><a class="" href="testing.html"><span class="dir">Previous</span><span class="t">Testing</span></a><a class="next" href="express-comparison.html"><span class="dir">Next</span><span class="t">Coming from Express</span></a></nav>
+        </article>
+        <aside class="docs-toc" id="docsToc" aria-label="On this page"><div class="toc-label">On this page</div><a href="#fast-because-it-is-small">Fast because it is small</a><a href="#where-the-time-goes">Where the time goes</a><a href="#routes-compile-once">Routes compile once</a><a href="#the-dispatch-loop-is-a-linear-scan">The dispatch loop is a linear scan</a><a href="#per-request-allocation">Per-request allocation</a><a href="#compression-costs-cpu-to-save-bytes">Compression costs CPU to save bytes</a><a href="#static-files-are-cheap-when-cached">Static files are cheap when cached</a><a href="#the-rate-limit-store-is-a-map">The rate limit store is a Map</a><a href="#sendfile-streams">sendFile streams</a><a href="#measuring-it">Measuring it</a><a href="#practical-tips">Practical tips</a></aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="docs-search-overlay" id="docsSearch" role="dialog" aria-modal="true" aria-label="Search documentation" hidden>
+    <div class="docs-search-modal">
+      <div class="docs-search-input-row">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="docsSearchInput" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
+        <span class="kbd">Esc</span>
+      </div>
+      <div class="docs-search-results" id="docsSearchResults"></div>
+      <div class="docs-search-foot">
+        <span><span class="kbd">↑</span><span class="kbd">↓</span> navigate</span>
+        <span><span class="kbd">↵</span> open</span>
+        <span><span class="kbd">Esc</span> close</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

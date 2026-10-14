@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logging · routiva docs</title>
+  <meta name="description" content="One log line per request with method, URL, status and duration, and a custom format hook for JSON logs.">
+  <meta name="theme-color" content="#0a0a0b">
+  <meta name="generator" content="routiva docs">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="routiva">
+  <meta property="og:title" content="Logging · routiva docs">
+  <meta property="og:description" content="One log line per request with method, URL, status and duration, and a custom format hook for JSON logs.">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/assets/styles-0S-izC94.js"></script>
+  <script type="module" crossorigin src="/assets/docs-DJN-6ILu.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/styles-DlVBLwF3.css">
+</head>
+<body>
+  <a class="skip-link" href="#doc-content">Skip to content</a>
+
+  <header class="docs-topbar">
+    <button class="docs-menu-btn" id="docsMenuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="docsSidebar">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="nav-logo" href="/">
+      <span class="logo-mark">r</span>
+      <span class="logo-text">routiva</span>
+      <span class="logo-tag">docs</span>
+    </a>
+    <button class="docs-search-trigger" id="docsSearchTrigger" aria-label="Search documentation">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span class="docs-search-label">Search docs</span>
+      <span class="kbd">⌘K</span>
+    </button>
+    <nav class="docs-topbar-links">
+      <a href="/">Home</a>
+      <a class="hide-sm" href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub</a>
+      <a class="hide-sm" href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm</a>
+    </nav>
+  </header>
+
+  <div class="docs-body">
+    <aside class="docs-sidebar" id="docsSidebar">
+      <nav class="docs-nav" aria-label="Documentation">
+        <div class="docs-nav-section"><div class="docs-nav-label">Introduction</div><a class="docs-nav-link" href="getting-started.html">Getting started</a><a class="docs-nav-link" href="installation.html">Installation</a><a class="docs-nav-link" href="quick-start.html">Quick start</a></div><div class="docs-nav-section"><div class="docs-nav-label">Core concepts</div><a class="docs-nav-link" href="core-concepts.html">Core concepts</a><a class="docs-nav-link" href="routing.html">Routing</a><a class="docs-nav-link" href="middleware.html">Middleware</a><a class="docs-nav-link" href="request-response.html">Request &amp; Response</a><a class="docs-nav-link" href="body-parsing.html">Body parsing</a><a class="docs-nav-link" href="static-files.html">Static files</a><a class="docs-nav-link" href="error-handling.html">Error handling</a></div><div class="docs-nav-section"><div class="docs-nav-label">Built-in middleware</div><a class="docs-nav-link" href="cors.html">CORS</a><a class="docs-nav-link" href="compression.html">Compression</a><a class="docs-nav-link" href="rate-limiting.html">Rate limiting</a><a class="docs-nav-link active" href="logging.html">Logging</a></div><div class="docs-nav-section"><div class="docs-nav-label">Guides</div><a class="docs-nav-link" href="examples.html">Examples</a><a class="docs-nav-link" href="testing.html">Testing</a><a class="docs-nav-link" href="performance.html">Performance</a><a class="docs-nav-link" href="express-comparison.html">Coming from Express</a><a class="docs-nav-link" href="faq.html">FAQ &amp; roadmap</a></div><div class="docs-nav-section"><div class="docs-nav-label">Reference</div><a class="docs-nav-link" href="api-reference.html">API reference</a><a class="docs-nav-link" href="architecture.html">Architecture</a></div>
+      </nav>
+      <div class="docs-sidebar-foot">
+        <a href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm ↗</a>
+        <a href="https://github.com/uditc0derr/routiva/blob/main/LICENSE" target="_blank" rel="noopener">MIT ↗</a>
+      </div>
+    </aside>
+    <div class="docs-scrim" id="docsScrim"></div>
+
+    <main class="docs-main" id="doc-content">
+      <div class="docs-main-inner">
+        <article class="docs-article">
+          <header class="docs-article-head">
+            <div class="docs-eyebrow">Built-in middleware</div>
+            <h1>Logging</h1>
+            <p class="docs-lede">One log line per request with method, URL, status and duration, and a custom format hook for JSON logs.</p>
+          </header>
+          <div class="docs-prose"><h2 id="what-logger-does">What logger() does<a class="anchor" href="#what-logger-does" aria-hidden="true">#</a></h2>
+<p><code>logger()</code> writes one line per request after the response finishes. The default line includes the time, method, URL, status code and duration. Pass <code>format</code> to emit your own shape.</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { createApp, logger } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> app = <span class="tok-fn">createApp</span>();
+
+app.<span class="tok-fn">use</span>(<span class="tok-fn">logger</span>());</code></pre></div>
+<p>Register it first so it wraps every request, including ones that end in an error handler.</p>
+<h2 id="options">Options<a class="anchor" href="#options" aria-hidden="true">#</a></h2>
+<div class="table-wrap"><table><thead><tr><th>Option</th><th>Default</th><th>Meaning</th></tr></thead><tbody><tr><td><code>stream</code></td><td><code>process.stdout</code></td><td>Anything with a <code>.write(string)</code> method</td></tr><tr><td><code>format</code></td><td><code>undefined</code></td><td><code>(req, res, ms) =&gt; string</code>; replaces the default line</td></tr><tr><td><code>enabled</code></td><td><code>true</code></td><td>Set <code>false</code> to disable logging entirely</td></tr><tr><td><code>color</code></td><td><code>stream.isTTY</code></td><td>Colorize the status code; defaults to on for a TTY</td></tr></tbody></table></div>
+<p>When <code>format</code> is <code>undefined</code>, the built-in formatter is used. <code>color</code> defaults to <code>Boolean(stream.isTTY)</code>, so piping to a file turns color off automatically. Force it with <code>color: true</code> or <code>color: false</code>.</p>
+<h2 id="when-the-line-is-written">When the line is written<a class="anchor" href="#when-the-line-is-written" aria-hidden="true">#</a></h2>
+<p>The middleware starts a <code>process.hrtime.bigint()</code> timer on entry and registers <code>onFinish</code> on both <code>finish</code> and <code>close</code> of <code>res.raw</code>. Logging happens on whichever fires first, and a <code>logged</code> latch guarantees exactly one line per request.</p>
+<p>Because it runs after the response, <code>res.statusCode</code> and the duration are final — even for responses produced by an error handler downstream. The line is written with <code>stream.write(</code>${line}\n<code>)</code>, so a custom <code>format</code> should return a string without a trailing newline.</p>
+<h2 id="the-default-format">The default format<a class="anchor" href="#the-default-format" aria-hidden="true">#</a></h2>
+<p><code>defaultFormat</code> produces a single space-separated line:</p>
+<div class="codeblock" data-lang="text"><div class="codeblock-head"><span class="lang">text</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>&lt;ISO timestamp&gt; &lt;METHOD&gt; &lt;URL&gt; &lt;STATUS&gt; &lt;ms&gt;ms</code></pre></div>
+<p>with the status colorized when <code>useColor</code> is true. The URL is <code>req.originalUrl || req.url</code>, so a mounted router still logs the full path. The duration is <code>ms.toFixed(1)</code>, one decimal place.</p>
+<div class="codeblock" data-lang="text"><div class="codeblock-head"><span class="lang">text</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>2026-10-14T09:31:02.114Z GET /health 200 3.2ms</code></pre></div>
+<p>Status colors are chosen by range:</p>
+<div class="table-wrap"><table><thead><tr><th>Status</th><th>Color</th></tr></thead><tbody><tr><td><code>5xx</code></td><td>red (<code>31</code>)</td></tr><tr><td><code>4xx</code></td><td>yellow (<code>33</code>)</td></tr><tr><td><code>3xx</code></td><td>cyan (<code>36</code>)</td></tr><tr><td>otherwise</td><td>green (<code>32</code>)</td></tr></tbody></table></div>
+<p>The escape codes are only emitted when <code>useColor</code> is true, so redirected output stays clean and copy-pasteable.</p>
+<h2 id="custom-format">Custom format<a class="anchor" href="#custom-format" aria-hidden="true">#</a></h2>
+<p><code>format</code> receives <code>(req, res, ms)</code>, where <code>ms</code> is a number. Return the line you want. This JSON example is suitable for production log pipelines:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { createApp, logger } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> app = <span class="tok-fn">createApp</span>();
+
+app.<span class="tok-fn">use</span>(
+  <span class="tok-fn">logger</span>({
+    format: (req, res, ms) =&gt;
+      JSON.<span class="tok-fn">stringify</span>({
+        time: <span class="tok-kw">new</span> <span class="tok-fn">Date</span>().<span class="tok-fn">toISOString</span>(),
+        method: req.<span class="tok-prop">method</span>,
+        url: req.<span class="tok-prop">originalUrl</span>,
+        status: res.<span class="tok-prop">statusCode</span>,
+        durationMs: Math.<span class="tok-fn">round</span>(ms * <span class="tok-num">10</span>) / <span class="tok-num">10</span>,
+        ip: req.<span class="tok-prop">ip</span>,
+      }),
+  }),
+);</code></pre></div>
+<p>Each request writes one compact JSON object:</p>
+<div class="codeblock" data-lang="text"><div class="codeblock-head"><span class="lang">text</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>{&quot;time&quot;:&quot;2026-10-14T09:31:02.114Z&quot;,&quot;method&quot;:&quot;POST&quot;,&quot;url&quot;:&quot;/api/orders&quot;,&quot;status&quot;:201,&quot;durationMs&quot;:12.4,&quot;ip&quot;:&quot;203.0.113.7&quot;}</code></pre></div>
+<p>Send logs somewhere other than stdout by passing a writable stream:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> fs <span class="tok-kw">from</span> <span class="tok-str">&#39;node:fs&#39;</span>;
+<span class="tok-kw">import</span> { logger } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> access = fs.<span class="tok-fn">createWriteStream</span>(<span class="tok-str">&#39;access.log&#39;</span>, { flags: <span class="tok-str">&#39;a&#39;</span> });
+
+app.<span class="tok-fn">use</span>(<span class="tok-fn">logger</span>({ stream: access, color: <span class="tok-kw">false</span> }));</code></pre></div>
+<p>Any object with a <code>write(string)</code> method works. A file stream is not a TTY, so color is already off; <code>color: false</code> makes that explicit.</p>
+<h2 id="turning-it-off">Turning it off<a class="anchor" href="#turning-it-off" aria-hidden="true">#</a></h2>
+<p><code>enabled: false</code> makes the middleware a no-op — useful when a test harness or an outer logger already covers requests.</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">use</span>(<span class="tok-fn">logger</span>({ enabled: process.<span class="tok-prop">env</span>.<span class="tok-prop">NODE_ENV</span> !== <span class="tok-str">&#39;test&#39;</span> }));</code></pre></div>
+<p>Unlike the other built-in middleware, <code>logger()</code> never changes the response: it reads the request and response but sets no headers and writes no body.</p>
+</div>
+          <nav class="pager"><a class="" href="rate-limiting.html"><span class="dir">Previous</span><span class="t">Rate limiting</span></a><a class="next" href="examples.html"><span class="dir">Next</span><span class="t">Examples</span></a></nav>
+        </article>
+        <aside class="docs-toc" id="docsToc" aria-label="On this page"><div class="toc-label">On this page</div><a href="#what-logger-does">What logger() does</a><a href="#options">Options</a><a href="#when-the-line-is-written">When the line is written</a><a href="#the-default-format">The default format</a><a href="#custom-format">Custom format</a><a href="#turning-it-off">Turning it off</a></aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="docs-search-overlay" id="docsSearch" role="dialog" aria-modal="true" aria-label="Search documentation" hidden>
+    <div class="docs-search-modal">
+      <div class="docs-search-input-row">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="docsSearchInput" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
+        <span class="kbd">Esc</span>
+      </div>
+      <div class="docs-search-results" id="docsSearchResults"></div>
+      <div class="docs-search-foot">
+        <span><span class="kbd">↑</span><span class="kbd">↓</span> navigate</span>
+        <span><span class="kbd">↵</span> open</span>
+        <span><span class="kbd">Esc</span> close</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

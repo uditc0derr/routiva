@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Body parsing · routiva docs</title>
+  <meta name="description" content="Parse JSON, form, text and raw request bodies into req.body with size limits and content-type gating.">
+  <meta name="theme-color" content="#0a0a0b">
+  <meta name="generator" content="routiva docs">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="routiva">
+  <meta property="og:title" content="Body parsing · routiva docs">
+  <meta property="og:description" content="Parse JSON, form, text and raw request bodies into req.body with size limits and content-type gating.">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/assets/styles-0S-izC94.js"></script>
+  <script type="module" crossorigin src="/assets/docs-DJN-6ILu.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/styles-DlVBLwF3.css">
+</head>
+<body>
+  <a class="skip-link" href="#doc-content">Skip to content</a>
+
+  <header class="docs-topbar">
+    <button class="docs-menu-btn" id="docsMenuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="docsSidebar">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="nav-logo" href="/">
+      <span class="logo-mark">r</span>
+      <span class="logo-text">routiva</span>
+      <span class="logo-tag">docs</span>
+    </a>
+    <button class="docs-search-trigger" id="docsSearchTrigger" aria-label="Search documentation">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span class="docs-search-label">Search docs</span>
+      <span class="kbd">⌘K</span>
+    </button>
+    <nav class="docs-topbar-links">
+      <a href="/">Home</a>
+      <a class="hide-sm" href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub</a>
+      <a class="hide-sm" href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm</a>
+    </nav>
+  </header>
+
+  <div class="docs-body">
+    <aside class="docs-sidebar" id="docsSidebar">
+      <nav class="docs-nav" aria-label="Documentation">
+        <div class="docs-nav-section"><div class="docs-nav-label">Introduction</div><a class="docs-nav-link" href="getting-started.html">Getting started</a><a class="docs-nav-link" href="installation.html">Installation</a><a class="docs-nav-link" href="quick-start.html">Quick start</a></div><div class="docs-nav-section"><div class="docs-nav-label">Core concepts</div><a class="docs-nav-link" href="core-concepts.html">Core concepts</a><a class="docs-nav-link" href="routing.html">Routing</a><a class="docs-nav-link" href="middleware.html">Middleware</a><a class="docs-nav-link" href="request-response.html">Request &amp; Response</a><a class="docs-nav-link active" href="body-parsing.html">Body parsing</a><a class="docs-nav-link" href="static-files.html">Static files</a><a class="docs-nav-link" href="error-handling.html">Error handling</a></div><div class="docs-nav-section"><div class="docs-nav-label">Built-in middleware</div><a class="docs-nav-link" href="cors.html">CORS</a><a class="docs-nav-link" href="compression.html">Compression</a><a class="docs-nav-link" href="rate-limiting.html">Rate limiting</a><a class="docs-nav-link" href="logging.html">Logging</a></div><div class="docs-nav-section"><div class="docs-nav-label">Guides</div><a class="docs-nav-link" href="examples.html">Examples</a><a class="docs-nav-link" href="testing.html">Testing</a><a class="docs-nav-link" href="performance.html">Performance</a><a class="docs-nav-link" href="express-comparison.html">Coming from Express</a><a class="docs-nav-link" href="faq.html">FAQ &amp; roadmap</a></div><div class="docs-nav-section"><div class="docs-nav-label">Reference</div><a class="docs-nav-link" href="api-reference.html">API reference</a><a class="docs-nav-link" href="architecture.html">Architecture</a></div>
+      </nav>
+      <div class="docs-sidebar-foot">
+        <a href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm ↗</a>
+        <a href="https://github.com/uditc0derr/routiva/blob/main/LICENSE" target="_blank" rel="noopener">MIT ↗</a>
+      </div>
+    </aside>
+    <div class="docs-scrim" id="docsScrim"></div>
+
+    <main class="docs-main" id="doc-content">
+      <div class="docs-main-inner">
+        <article class="docs-article">
+          <header class="docs-article-head">
+            <div class="docs-eyebrow">Core concepts</div>
+            <h1>Body parsing</h1>
+            <p class="docs-lede">Parse JSON, form, text and raw request bodies into req.body with size limits and content-type gating.</p>
+          </header>
+          <div class="docs-prose"><h2 id="the-four-parsers">The four parsers<a class="anchor" href="#the-four-parsers" aria-hidden="true">#</a></h2>
+<p>routiva ships four body parsers, all built on one streaming reader:</p>
+<ul><li><code>json()</code> for <code>application/json</code></li><li><code>urlencoded()</code> for <code>application/x-www-form-urlencoded</code></li><li><code>text()</code> for <code>text/plain</code></li><li><code>raw()</code> for a <code>Buffer</code> of anything</li></ul>
+<p>Each one writes a parsed value to <code>req.body</code> and shares the same size-limit and error semantics, so you can stack them and let each parser decide whether the request is its job.</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { App, json, urlencoded, text, raw } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> app = <span class="tok-kw">new</span> <span class="tok-fn">App</span>();
+
+app.<span class="tok-fn">use</span>(<span class="tok-fn">json</span>({ limit: <span class="tok-str">&#39;1mb&#39;</span> }));
+app.<span class="tok-fn">use</span>(<span class="tok-fn">urlencoded</span>({ extended: <span class="tok-kw">true</span> }));
+app.<span class="tok-fn">use</span>(<span class="tok-fn">text</span>());
+app.<span class="tok-fn">use</span>(<span class="tok-fn">raw</span>());</code></pre></div>
+<p><code>App.json()</code>, <code>App.urlencoded()</code>, <code>App.text()</code> and <code>App.raw()</code> are the same functions attached to the <code>App</code> class.</p>
+<h2 id="how-a-parser-decides-to-run">How a parser decides to run<a class="anchor" href="#how-a-parser-decides-to-run" aria-hidden="true">#</a></h2>
+<p>Every parser runs the same three checks before touching the stream:</p>
+<ol><li><strong>Already parsed?</strong> If <code>req.body !== undefined</code>, it calls <code>next()</code> without reading. This is what makes stacking safe — the first parser that handles the request wins and the rest become no-ops.</li><li><strong>Is there a body?</strong> A request has one when <code>transfer-encoding</code> is present, or <code>content-length</code> is present and greater than <code>0</code>. A plain <code>GET</code> is skipped.</li><li><strong>Does the content type match?</strong> The request&#39;s <code>content-type</code> is compared to the parser&#39;s expected type with a case-insensitive substring match, so <code>application/json; charset=utf-8</code> matches <code>application/json</code>.</li></ol>
+<p>If any check fails the parser calls <code>next()</code> and leaves <code>req.body</code> as <code>undefined</code>.</p>
+<blockquote><p>Gating is a substring match, not a media-type parse. <code>application/vnd.api+json</code> does <strong>not</strong> contain the string <code>application/json</code>, so the default <code>json()</code> parser skips it. Pass <code>{ type: &#39;application/vnd.api+json&#39; }</code>, or use <code>text()</code>/<code>raw()</code> for those.</p>
+</blockquote>
+<h2 id="json">json()<a class="anchor" href="#json" aria-hidden="true">#</a></h2>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">post</span>(<span class="tok-str">&#39;/users&#39;</span>, <span class="tok-fn">json</span>({ limit: <span class="tok-str">&#39;100kb&#39;</span> }), (req, res) =&gt; {
+  res.<span class="tok-fn">status</span>(<span class="tok-num">201</span>).<span class="tok-fn">json</span>(req.<span class="tok-prop">body</span>);
+});</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Option</th><th>Default</th><th>Behaviour</th></tr></thead><tbody><tr><td><code>limit</code></td><td><code>&#39;1mb&#39;</code></td><td>Maximum body size; overflow rejects with <code>413</code></td></tr><tr><td><code>type</code></td><td><code>&#39;application/json&#39;</code></td><td>Content-Type substring to match</td></tr><tr><td><code>strict</code></td><td><code>true</code></td><td>Body must start with <code>{</code> or <code>[</code></td></tr><tr><td><code>reviver</code></td><td><code>undefined</code></td><td>Passed straight to <code>JSON.parse</code></td></tr><tr><td><code>verify</code></td><td><code>undefined</code></td><td>Called as <code>verify(req, res, buffer, &#39;utf-8&#39;)</code> before parsing</td></tr></tbody></table></div>
+<p>Behaviour worth knowing:</p>
+<ul><li>An <strong>empty body</strong> sets <code>req.body = {}</code> instead of leaving it <code>undefined</code>.</li><li>With the default <code>strict: true</code>, a bare <code>42</code>, <code>&quot;hello&quot;</code> or <code>true</code> is rejected before parsing. Set <code>strict: false</code> to accept any valid JSON value.</li><li><strong>Malformed JSON</strong> rejects with an <code>HttpError(400)</code> whose <code>type</code> is <code>entity.parse.failed</code> and whose <code>body</code> property holds the raw text.</li><li><strong>Oversized bodies</strong> reject with an <code>HttpError(413)</code> with <code>type: &#39;entity.too.large&#39;</code> and the message <code>Request entity too large</code>.</li><li><code>verify</code> runs after the strict check and before <code>JSON.parse</code>. Because it runs inside the read promise, <strong>throwing from <code>verify</code> routes into your error middleware</strong> — exactly what a webhook signature check needs.</li></ul>
+<h3 id="verify-and-webhook-signatures">verify and webhook signatures<a class="anchor" href="#verify-and-webhook-signatures" aria-hidden="true">#</a></h3>
+<p><code>verify</code> gets the raw buffer, so it can validate a signature over the exact bytes the client sent, before any JSON transformation:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { createHmac, timingSafeEqual } <span class="tok-kw">from</span> <span class="tok-str">&#39;node:crypto&#39;</span>;
+<span class="tok-kw">import</span> { HttpError, json } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+app.<span class="tok-fn">post</span>(<span class="tok-str">&#39;/webhooks/stripe&#39;</span>, <span class="tok-fn">json</span>({
+  <span class="tok-fn">verify</span>(req, res, buffer) {
+    <span class="tok-kw">const</span> expected = <span class="tok-fn">createHmac</span>(<span class="tok-str">&#39;sha256&#39;</span>, SECRET).<span class="tok-fn">update</span>(buffer).<span class="tok-fn">digest</span>(<span class="tok-str">&#39;hex&#39;</span>);
+    <span class="tok-kw">const</span> received = req.<span class="tok-fn">header</span>(<span class="tok-str">&#39;x-signature&#39;</span>) || <span class="tok-str">&#39;&#39;</span>;
+    <span class="tok-kw">const</span> a = Buffer.<span class="tok-kw">from</span>(expected);
+    <span class="tok-kw">const</span> b = Buffer.<span class="tok-kw">from</span>(received);
+    <span class="tok-kw">if</span> (a.<span class="tok-prop">length</span> !== b.<span class="tok-prop">length</span> || !<span class="tok-fn">timingSafeEqual</span>(a, b)) {
+      <span class="tok-kw">throw</span> <span class="tok-kw">new</span> <span class="tok-fn">HttpError</span>(<span class="tok-num">400</span>, <span class="tok-str">&#39;invalid signature&#39;</span>, { type: <span class="tok-str">&#39;signature.invalid&#39;</span> });
+    }
+  },
+}), (req, res) =&gt; {
+  res.<span class="tok-fn">json</span>({ received: <span class="tok-kw">true</span> });
+});</code></pre></div>
+<h2 id="urlencoded">urlencoded()<a class="anchor" href="#urlencoded" aria-hidden="true">#</a></h2>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">use</span>(<span class="tok-fn">urlencoded</span>({ extended: <span class="tok-kw">true</span> }));</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Option</th><th>Default</th><th>Behaviour</th></tr></thead><tbody><tr><td><code>limit</code></td><td><code>&#39;100kb&#39;</code></td><td>Maximum body size</td></tr><tr><td><code>extended</code></td><td><code>false</code></td><td>Decode bracket notation into nested objects</td></tr></tbody></table></div>
+<p><code>urlencoded()</code> has no <code>type</code> option — it always matches <code>application/x-www-form-urlencoded</code>. The body is read with <code>URLSearchParams</code>, so <code>+</code> and percent-escapes are decoded for you.</p>
+<p>With the default <code>extended: false</code>, keys stay flat and the last value wins:</p>
+<div class="codeblock" data-lang="text"><div class="codeblock-head"><span class="lang">text</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>name=ada&amp;role=admin&amp;role=user    -&gt;    { name: &#39;ada&#39;, role: &#39;user&#39; }</code></pre></div>
+<p>With <code>extended: true</code>, bracket notation builds nested objects:</p>
+<div class="codeblock" data-lang="text"><div class="codeblock-head"><span class="lang">text</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>user[name]=ada&amp;user[address][city]=london
+
+-&gt;  { user: { name: &#39;ada&#39;, address: { city: &#39;london&#39; } } }</code></pre></div>
+<blockquote><p>The extended parser builds <strong>objects only</strong>. Array notation such as <code>tags[]=a&amp;tags[]=b</code> stores a key literally named <code>&#39;&#39;</code>, not an array. Send JSON when you need arrays.</p>
+</blockquote>
+<h2 id="text">text()<a class="anchor" href="#text" aria-hidden="true">#</a></h2>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">post</span>(<span class="tok-str">&#39;/notes&#39;</span>, <span class="tok-fn">text</span>({ type: <span class="tok-str">&#39;text/plain&#39;</span> }), (req, res) =&gt; {
+  res.<span class="tok-fn">json</span>({ length: req.<span class="tok-prop">body</span>.<span class="tok-prop">length</span> });
+});</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Option</th><th>Default</th><th>Behaviour</th></tr></thead><tbody><tr><td><code>limit</code></td><td><code>&#39;100kb&#39;</code></td><td>Maximum body size</td></tr><tr><td><code>type</code></td><td><code>&#39;text/plain&#39;</code></td><td>Content-Type substring to match</td></tr><tr><td><code>encoding</code></td><td><code>&#39;utf8&#39;</code></td><td>Passed to <code>buffer.toString(encoding)</code></td></tr></tbody></table></div>
+<p><code>req.body</code> is a string. Pass a broader <code>type</code> to accept other text-ish content types.</p>
+<h2 id="raw">raw()<a class="anchor" href="#raw" aria-hidden="true">#</a></h2>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">post</span>(<span class="tok-str">&#39;/upload&#39;</span>, <span class="tok-fn">raw</span>({ type: <span class="tok-str">&#39;application/octet-stream&#39;</span>, limit: <span class="tok-str">&#39;5mb&#39;</span> }), (req, res) =&gt; {
+  res.<span class="tok-fn">json</span>({ bytes: req.<span class="tok-prop">body</span>.<span class="tok-prop">length</span> });
+});</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Option</th><th>Default</th><th>Behaviour</th></tr></thead><tbody><tr><td><code>limit</code></td><td><code>&#39;100kb&#39;</code></td><td>Maximum body size</td></tr><tr><td><code>type</code></td><td>unset</td><td>When omitted, <strong>every</strong> content type is accepted; when set, it must match</td></tr></tbody></table></div>
+<p><code>req.body</code> is a <code>Buffer</code>. Unlike the other three parsers, <code>raw()</code> does not gate on content type unless you pass <code>type</code>, which makes it the catch-all parser to register last.</p>
+<h2 id="size-limits">Size limits<a class="anchor" href="#size-limits" aria-hidden="true">#</a></h2>
+<p>Limits are parsed by <code>parseBytes</code>, which understands bare numbers and unit suffixes:</p>
+<div class="table-wrap"><table><thead><tr><th>Value</th><th>Bytes</th></tr></thead><tbody><tr><td><code>1024</code></td><td>1,024</td></tr><tr><td><code>&#39;100kb&#39;</code></td><td>102,400</td></tr><tr><td><code>&#39;1mb&#39;</code></td><td>1,048,576</td></tr><tr><td><code>&#39;2gb&#39;</code></td><td>2,147,483,648</td></tr></tbody></table></div>
+<p>When the accumulated size exceeds the limit, the reader stops collecting chunks, <strong>drains</strong> the rest of the stream with <code>stream.resume()</code> so the socket stays writable, and rejects with a <code>413</code>. An unparsable limit falls back to that parser&#39;s default.</p>
+<h2 id="what-the-client-sees">What the client sees<a class="anchor" href="#what-the-client-sees" aria-hidden="true">#</a></h2>
+<p>Body-parser errors are <code>HttpError</code>s, so the default error handler renders them as JSON:</p>
+<div class="table-wrap"><table><thead><tr><th>Situation</th><th>Status</th><th><code>type</code></th><th>Default message</th></tr></thead><tbody><tr><td>Malformed JSON</td><td><code>400</code></td><td><code>entity.parse.failed</code></td><td>the <code>JSON.parse</code> error message</td></tr><tr><td>Non-object/array under <code>strict</code></td><td><code>400</code></td><td><code>entity.parse.failed</code></td><td><code>JSON body must be an object or array</code></td></tr><tr><td>Body over <code>limit</code></td><td><code>413</code></td><td><code>entity.too.large</code></td><td><code>Request entity too large</code></td></tr></tbody></table></div>
+<p>Because 4xx errors are exposed (<code>status &lt; 500</code>), their message reaches the client. Override the shape with your own error middleware — see <a href="error-handling.html">Error handling</a>.</p>
+</div>
+          <nav class="pager"><a class="" href="request-response.html"><span class="dir">Previous</span><span class="t">Request &amp; Response</span></a><a class="next" href="static-files.html"><span class="dir">Next</span><span class="t">Static files</span></a></nav>
+        </article>
+        <aside class="docs-toc" id="docsToc" aria-label="On this page"><div class="toc-label">On this page</div><a href="#the-four-parsers">The four parsers</a><a href="#how-a-parser-decides-to-run">How a parser decides to run</a><a href="#json">json()</a><a class="h3" href="#verify-and-webhook-signatures">verify and webhook signatures</a><a href="#urlencoded">urlencoded()</a><a href="#text">text()</a><a href="#raw">raw()</a><a href="#size-limits">Size limits</a><a href="#what-the-client-sees">What the client sees</a></aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="docs-search-overlay" id="docsSearch" role="dialog" aria-modal="true" aria-label="Search documentation" hidden>
+    <div class="docs-search-modal">
+      <div class="docs-search-input-row">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="docsSearchInput" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
+        <span class="kbd">Esc</span>
+      </div>
+      <div class="docs-search-results" id="docsSearchResults"></div>
+      <div class="docs-search-foot">
+        <span><span class="kbd">↑</span><span class="kbd">↓</span> navigate</span>
+        <span><span class="kbd">↵</span> open</span>
+        <span><span class="kbd">Esc</span> close</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

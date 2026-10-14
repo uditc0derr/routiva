@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rate limiting · routiva docs</title>
+  <meta name="description" content="Fixed-window rate limiting keyed by client IP, with X-RateLimit headers, 429 responses and a pluggable store.">
+  <meta name="theme-color" content="#0a0a0b">
+  <meta name="generator" content="routiva docs">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="routiva">
+  <meta property="og:title" content="Rate limiting · routiva docs">
+  <meta property="og:description" content="Fixed-window rate limiting keyed by client IP, with X-RateLimit headers, 429 responses and a pluggable store.">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/assets/styles-0S-izC94.js"></script>
+  <script type="module" crossorigin src="/assets/docs-DJN-6ILu.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/styles-DlVBLwF3.css">
+</head>
+<body>
+  <a class="skip-link" href="#doc-content">Skip to content</a>
+
+  <header class="docs-topbar">
+    <button class="docs-menu-btn" id="docsMenuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="docsSidebar">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="nav-logo" href="/">
+      <span class="logo-mark">r</span>
+      <span class="logo-text">routiva</span>
+      <span class="logo-tag">docs</span>
+    </a>
+    <button class="docs-search-trigger" id="docsSearchTrigger" aria-label="Search documentation">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span class="docs-search-label">Search docs</span>
+      <span class="kbd">⌘K</span>
+    </button>
+    <nav class="docs-topbar-links">
+      <a href="/">Home</a>
+      <a class="hide-sm" href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub</a>
+      <a class="hide-sm" href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm</a>
+    </nav>
+  </header>
+
+  <div class="docs-body">
+    <aside class="docs-sidebar" id="docsSidebar">
+      <nav class="docs-nav" aria-label="Documentation">
+        <div class="docs-nav-section"><div class="docs-nav-label">Introduction</div><a class="docs-nav-link" href="getting-started.html">Getting started</a><a class="docs-nav-link" href="installation.html">Installation</a><a class="docs-nav-link" href="quick-start.html">Quick start</a></div><div class="docs-nav-section"><div class="docs-nav-label">Core concepts</div><a class="docs-nav-link" href="core-concepts.html">Core concepts</a><a class="docs-nav-link" href="routing.html">Routing</a><a class="docs-nav-link" href="middleware.html">Middleware</a><a class="docs-nav-link" href="request-response.html">Request &amp; Response</a><a class="docs-nav-link" href="body-parsing.html">Body parsing</a><a class="docs-nav-link" href="static-files.html">Static files</a><a class="docs-nav-link" href="error-handling.html">Error handling</a></div><div class="docs-nav-section"><div class="docs-nav-label">Built-in middleware</div><a class="docs-nav-link" href="cors.html">CORS</a><a class="docs-nav-link" href="compression.html">Compression</a><a class="docs-nav-link active" href="rate-limiting.html">Rate limiting</a><a class="docs-nav-link" href="logging.html">Logging</a></div><div class="docs-nav-section"><div class="docs-nav-label">Guides</div><a class="docs-nav-link" href="examples.html">Examples</a><a class="docs-nav-link" href="testing.html">Testing</a><a class="docs-nav-link" href="performance.html">Performance</a><a class="docs-nav-link" href="express-comparison.html">Coming from Express</a><a class="docs-nav-link" href="faq.html">FAQ &amp; roadmap</a></div><div class="docs-nav-section"><div class="docs-nav-label">Reference</div><a class="docs-nav-link" href="api-reference.html">API reference</a><a class="docs-nav-link" href="architecture.html">Architecture</a></div>
+      </nav>
+      <div class="docs-sidebar-foot">
+        <a href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm ↗</a>
+        <a href="https://github.com/uditc0derr/routiva/blob/main/LICENSE" target="_blank" rel="noopener">MIT ↗</a>
+      </div>
+    </aside>
+    <div class="docs-scrim" id="docsScrim"></div>
+
+    <main class="docs-main" id="doc-content">
+      <div class="docs-main-inner">
+        <article class="docs-article">
+          <header class="docs-article-head">
+            <div class="docs-eyebrow">Built-in middleware</div>
+            <h1>Rate limiting</h1>
+            <p class="docs-lede">Fixed-window rate limiting keyed by client IP, with X-RateLimit headers, 429 responses and a pluggable store.</p>
+          </header>
+          <div class="docs-prose"><h2 id="what-ratelimit-does">What rateLimit() does<a class="anchor" href="#what-ratelimit-does" aria-hidden="true">#</a></h2>
+<p><code>rateLimit()</code> counts requests per client in a fixed time window and rejects callers who exceed the limit with a <code>429</code>. It sets the standard <code>X-RateLimit-*</code> headers and a <code>Retry-After</code> header on the rejection.</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { createApp, rateLimit } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> app = <span class="tok-fn">createApp</span>();
+
+app.<span class="tok-fn">use</span>(<span class="tok-fn">rateLimit</span>({ windowMs: <span class="tok-num">60_000</span>, max: <span class="tok-num">100</span> }));</code></pre></div>
+<h2 id="options">Options<a class="anchor" href="#options" aria-hidden="true">#</a></h2>
+<div class="table-wrap"><table><thead><tr><th>Option</th><th>Default</th><th>Meaning</th></tr></thead><tbody><tr><td><code>windowMs</code></td><td><code>60000</code></td><td>Window length in milliseconds</td></tr><tr><td><code>max</code></td><td><code>100</code></td><td>Maximum requests per window (alias: <code>limit</code>)</td></tr><tr><td><code>statusCode</code></td><td><code>429</code></td><td>Status code of the default rejection</td></tr><tr><td><code>message</code></td><td><code>&#39;Too Many Requests&#39;</code></td><td>Message in the default JSON rejection</td></tr><tr><td><code>headers</code></td><td><code>true</code></td><td>Emit <code>X-RateLimit-*</code> and <code>Retry-After</code> (set <code>false</code> to disable)</td></tr><tr><td><code>skip</code></td><td><code>() =&gt; false</code></td><td><code>(req, res) =&gt; boolean</code>; return <code>true</code> to bypass counting</td></tr><tr><td><code>keyGenerator</code></td><td>client IP</td><td><code>(req, res) =&gt; string</code>; the counter key</td></tr><tr><td><code>handler</code></td><td><code>undefined</code></td><td><code>(req, res, next, record) =&gt; void</code> for custom rejections</td></tr><tr><td><code>store</code></td><td><code>new MemoryStore(windowMs)</code></td><td>Counter backend implementing <code>hit(key)</code></td></tr></tbody></table></div>
+<h2 id="the-algorithm">The algorithm<a class="anchor" href="#the-algorithm" aria-hidden="true">#</a></h2>
+<p>The default store uses a <strong>fixed window</strong> per key. Every request increments the counter; the window resets after <code>windowMs</code>.</p>
+<div class="codeblock" data-lang="text"><div class="codeblock-head"><span class="lang">text</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>hit(key)
+  │
+  ├─ no record, or record.resetTime &lt;= now?
+  │      record = { count: 0, resetTime: now + windowMs }
+  │
+  ├─ record.count += 1
+  └─ return { count, resetTime }
+
+limiter(req, res, next)
+  │
+  ├─ skip(req, res)? ─▶ next()
+  ├─ record = store.hit(keyGenerator(req, res))
+  ├─ remaining = max(0, max - record.count)
+  ├─ over limit? record.count &gt; max
+  │      ├─ set Retry-After, call handler(...) or send statusCode JSON
+  │      └─ stop
+  └─ next()</code></pre></div>
+<p>The count is incremented before it is checked, so with <code>max: 100</code> the 101st request in a window receives the <code>429</code>. A fixed window is cheap but allows a burst at a boundary: a client can send <code>max</code> requests just before the reset and another <code>max</code> just after. For smooth limits, keep the interface and swap in a sliding-window <code>store</code>.</p>
+<h2 id="response-headers">Response headers<a class="anchor" href="#response-headers" aria-hidden="true">#</a></h2>
+<p>When <code>headers</code> is true (the default), every request through the limiter gets:</p>
+<div class="table-wrap"><table><thead><tr><th>Header</th><th>Value</th></tr></thead><tbody><tr><td><code>X-RateLimit-Limit</code></td><td><code>max</code></td></tr><tr><td><code>X-RateLimit-Remaining</code></td><td><code>max(0, max - count)</code></td></tr><tr><td><code>X-RateLimit-Reset</code></td><td>Window reset time in Unix <strong>seconds</strong> (<code>Math.ceil(resetTime / 1000)</code>)</td></tr><tr><td><code>Retry-After</code></td><td>Seconds until reset, at least <code>1</code> — only on the <code>429</code> response</td></tr></tbody></table></div>
+<p>Set <code>headers: false</code> to suppress all of them, including <code>Retry-After</code>.</p>
+<p>The default rejection is JSON, using <code>statusCode</code> and <code>message</code>:</p>
+<div class="codeblock" data-lang="json"><div class="codeblock-head"><span class="lang">json</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>{ <span class="tok-str">&quot;error&quot;</span>: { <span class="tok-str">&quot;message&quot;</span>: <span class="tok-str">&quot;Too Many Requests&quot;</span>, <span class="tok-str">&quot;status&quot;</span>: <span class="tok-num">429</span> } }</code></pre></div>
+<h2 id="the-memorystore">The MemoryStore<a class="anchor" href="#the-memorystore" aria-hidden="true">#</a></h2>
+<p><code>MemoryStore</code> is a <code>Map</code>-backed fixed-window store exported from the package.</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { rateLimit, MemoryStore } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> store = <span class="tok-kw">new</span> <span class="tok-fn">MemoryStore</span>(<span class="tok-num">60_000</span>);
+app.<span class="tok-fn">use</span>(<span class="tok-fn">rateLimit</span>({ store }));</code></pre></div>
+<div class="table-wrap"><table><thead><tr><th>Member</th><th>Description</th></tr></thead><tbody><tr><td><code>new MemoryStore(windowMs = 60000)</code></td><td>Create the store; starts an <code>unref()</code>&#39;d cleanup timer</td></tr><tr><td><code>hit(key)</code></td><td>Increment and return <code>{ count, resetTime }</code> (resets expired windows)</td></tr><tr><td><code>reset(key)</code></td><td>Delete one key; with no argument, clear the whole store</td></tr><tr><td><code>clearExpired()</code></td><td>Drop every record whose <code>resetTime</code> has passed</td></tr><tr><td><code>size</code></td><td>Number of live keys</td></tr><tr><td><code>stop()</code></td><td>Stop the background cleanup timer</td></tr></tbody></table></div>
+<p>The cleanup timer is <code>unref()</code>&#39;d, so it never keeps the process alive.</p>
+<h2 id="custom-stores">Custom stores<a class="anchor" href="#custom-stores" aria-hidden="true">#</a></h2>
+<p>The middleware only calls one method: <code>store.hit(key)</code>, which must return <code>{ count, resetTime }</code> <strong>synchronously</strong>. <code>reset</code>, <code>clearExpired</code> and <code>size</code> are conveniences on <code>MemoryStore</code> — the limiter does not use them.</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">class</span> RedisStore {
+  <span class="tok-fn">constructor</span>(windowMs) {
+    <span class="tok-kw">this</span>.<span class="tok-prop">windowMs</span> = windowMs;
+  }
+
+  <span class="tok-com">// Must be synchronous: the middleware reads the record on the same tick.</span>
+  <span class="tok-fn">hit</span>(key) {
+    <span class="tok-kw">const</span> count = redis.<span class="tok-fn">incr</span>(key);           <span class="tok-com">// node_redis in sync-ish wrapper</span>
+    <span class="tok-kw">if</span> (count === <span class="tok-num">1</span>) redis.<span class="tok-fn">pexpire</span>(key, <span class="tok-kw">this</span>.<span class="tok-prop">windowMs</span>);
+    <span class="tok-kw">const</span> ttl = redis.<span class="tok-fn">pttl</span>(key);
+    <span class="tok-kw">return</span> { count, resetTime: Date.<span class="tok-fn">now</span>() + ttl };
+  }
+}</code></pre></div>
+<p>Most real backends are async, but <code>hit</code> must stay synchronous. Do the async lookup in an earlier middleware, stash a <code>{ count, resetTime }</code> on the request, and read it back from <code>key</code> inside <code>hit</code>.</p>
+<h2 id="per-route-limits">Per-route limits<a class="anchor" href="#per-route-limits" aria-hidden="true">#</a></h2>
+<p>A limiter is ordinary middleware, so attach it to one route and clamp sensitive routes harder than the global default.</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { createApp, rateLimit } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> app = <span class="tok-fn">createApp</span>();
+
+<span class="tok-kw">const</span> loginLimiter = <span class="tok-fn">rateLimit</span>({
+  windowMs: <span class="tok-num">15</span> * <span class="tok-num">60_000</span>,
+  max: <span class="tok-num">10</span>,
+  message: <span class="tok-str">&#39;Too many login attempts. Try again later.&#39;</span>,
+  keyGenerator: (req) =&gt; <span class="tok-str">`${req.ip}:${req.body?.email ?? &#39;&#39;}`</span>,
+});
+
+app.<span class="tok-fn">post</span>(<span class="tok-str">&#39;/login&#39;</span>, loginLimiter, <span class="tok-kw">async</span> (req, res) =&gt; {
+  <span class="tok-com">// ...</span>
+  res.<span class="tok-fn">json</span>({ ok: <span class="tok-kw">true</span> });
+});</code></pre></div>
+<p>A custom <code>handler</code> takes over the response completely. <code>record</code> carries the current <code>{ count, resetTime }</code>:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">use</span>(
+  <span class="tok-fn">rateLimit</span>({
+    max: <span class="tok-num">20</span>,
+    <span class="tok-fn">handler</span>(req, res, next, record) {
+      res.<span class="tok-fn">status</span>(<span class="tok-num">429</span>).<span class="tok-fn">json</span>({
+        error: <span class="tok-str">&#39;rate_limited&#39;</span>,
+        retryAfter: Math.<span class="tok-fn">ceil</span>((record.<span class="tok-prop">resetTime</span> - Date.<span class="tok-fn">now</span>()) / <span class="tok-num">1000</span>),
+      });
+    },
+  }),
+);</code></pre></div>
+<p>To disable limiting during tests, pass <code>skip</code>:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">use</span>(<span class="tok-fn">rateLimit</span>({ skip: () =&gt; process.<span class="tok-prop">env</span>.<span class="tok-prop">NODE_ENV</span> === <span class="tok-str">&#39;test&#39;</span> }));</code></pre></div>
+<h2 id="how-keys-are-chosen">How keys are chosen<a class="anchor" href="#how-keys-are-chosen" aria-hidden="true">#</a></h2>
+<p>The default <code>keyGenerator</code> returns <code>req.ip</code>, falling back to <code>req.raw.socket.remoteAddress</code>, then <code>&#39;unknown&#39;</code>. <code>req.ip</code> respects the app&#39;s <code>trust proxy</code> setting: with it off, it is the socket&#39;s <code>remoteAddress</code>; with it on, it comes from <code>X-Forwarded-For</code> (a number selects that many hops from the right). Behind a proxy, enable <code>trust proxy</code> or every caller shares the proxy&#39;s IP and the limit.</p>
+<p>The default store lives in memory, so it counts per process. Multiple instances behind a load balancer each keep their own counters unless you supply a shared <code>store</code>.</p>
+</div>
+          <nav class="pager"><a class="" href="compression.html"><span class="dir">Previous</span><span class="t">Compression</span></a><a class="next" href="logging.html"><span class="dir">Next</span><span class="t">Logging</span></a></nav>
+        </article>
+        <aside class="docs-toc" id="docsToc" aria-label="On this page"><div class="toc-label">On this page</div><a href="#what-ratelimit-does">What rateLimit() does</a><a href="#options">Options</a><a href="#the-algorithm">The algorithm</a><a href="#response-headers">Response headers</a><a href="#the-memorystore">The MemoryStore</a><a href="#custom-stores">Custom stores</a><a href="#per-route-limits">Per-route limits</a><a href="#how-keys-are-chosen">How keys are chosen</a></aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="docs-search-overlay" id="docsSearch" role="dialog" aria-modal="true" aria-label="Search documentation" hidden>
+    <div class="docs-search-modal">
+      <div class="docs-search-input-row">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="docsSearchInput" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
+        <span class="kbd">Esc</span>
+      </div>
+      <div class="docs-search-results" id="docsSearchResults"></div>
+      <div class="docs-search-foot">
+        <span><span class="kbd">↑</span><span class="kbd">↓</span> navigate</span>
+        <span><span class="kbd">↵</span> open</span>
+        <span><span class="kbd">Esc</span> close</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

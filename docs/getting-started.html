@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting started · routiva docs</title>
+  <meta name="description" content="What routiva is, the ideas behind it, and a working server in under a minute.">
+  <meta name="theme-color" content="#0a0a0b">
+  <meta name="generator" content="routiva docs">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="routiva">
+  <meta property="og:title" content="Getting started · routiva docs">
+  <meta property="og:description" content="What routiva is, the ideas behind it, and a working server in under a minute.">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#doc-content">Skip to content</a>
+
+  <header class="docs-topbar">
+    <button class="docs-menu-btn" id="docsMenuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="docsSidebar">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="nav-logo" href="/">
+      <span class="logo-mark">r</span>
+      <span class="logo-text">routiva</span>
+      <span class="logo-tag">docs</span>
+    </a>
+    <button class="docs-search-trigger" id="docsSearchTrigger" aria-label="Search documentation">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span class="docs-search-label">Search docs</span>
+      <span class="kbd">⌘K</span>
+    </button>
+    <nav class="docs-topbar-links">
+      <a href="/">Home</a>
+      <a class="hide-sm" href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub</a>
+      <a class="hide-sm" href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm</a>
+    </nav>
+  </header>
+
+  <div class="docs-body">
+    <aside class="docs-sidebar" id="docsSidebar">
+      <nav class="docs-nav" aria-label="Documentation">
+        <div class="docs-nav-section"><div class="docs-nav-label">Introduction</div><a class="docs-nav-link active" href="getting-started.html">Getting started</a><a class="docs-nav-link" href="installation.html">Installation</a><a class="docs-nav-link" href="quick-start.html">Quick start</a></div><div class="docs-nav-section"><div class="docs-nav-label">Core concepts</div><a class="docs-nav-link" href="core-concepts.html">Core concepts</a><a class="docs-nav-link" href="routing.html">Routing</a><a class="docs-nav-link" href="middleware.html">Middleware</a><a class="docs-nav-link" href="request-response.html">Request &amp; Response</a><a class="docs-nav-link" href="body-parsing.html">Body parsing</a><a class="docs-nav-link" href="static-files.html">Static files</a><a class="docs-nav-link" href="error-handling.html">Error handling</a></div><div class="docs-nav-section"><div class="docs-nav-label">Built-in middleware</div><a class="docs-nav-link" href="cors.html">CORS</a><a class="docs-nav-link" href="compression.html">Compression</a><a class="docs-nav-link" href="rate-limiting.html">Rate limiting</a><a class="docs-nav-link" href="logging.html">Logging</a></div><div class="docs-nav-section"><div class="docs-nav-label">Guides</div><a class="docs-nav-link" href="examples.html">Examples</a><a class="docs-nav-link" href="testing.html">Testing</a><a class="docs-nav-link" href="performance.html">Performance</a><a class="docs-nav-link" href="express-comparison.html">Coming from Express</a><a class="docs-nav-link" href="faq.html">FAQ &amp; roadmap</a></div><div class="docs-nav-section"><div class="docs-nav-label">Reference</div><a class="docs-nav-link" href="api-reference.html">API reference</a><a class="docs-nav-link" href="architecture.html">Architecture</a></div>
+      </nav>
+      <div class="docs-sidebar-foot">
+        <a href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm ↗</a>
+        <a href="https://github.com/uditc0derr/routiva/blob/main/LICENSE" target="_blank" rel="noopener">MIT ↗</a>
+      </div>
+    </aside>
+    <div class="docs-scrim" id="docsScrim"></div>
+
+    <main class="docs-main" id="doc-content">
+      <div class="docs-main-inner">
+        <article class="docs-article">
+          <header class="docs-article-head">
+            <div class="docs-eyebrow">Introduction</div>
+            <h1>Getting started</h1>
+            <p class="docs-lede">What routiva is, the ideas behind it, and a working server in under a minute.</p>
+          </header>
+          <div class="docs-prose"><h2 id="what-is-routiva">What is routiva?<a class="anchor" href="#what-is-routiva" aria-hidden="true">#</a></h2>
+<p>routiva is a small web framework for Node.js that gives you the ergonomics of Express — routing, middleware, request/response helpers, body parsing, static files, CORS, compression, logging and rate limiting — while staying completely dependency-free.</p>
+<p>Everything is built on Node&#39;s own <code>node:http</code>. There is no <code>path-to-regexp</code>, no <code>body-parser</code>, no <code>mime-types</code>, no transitive tree of packages to audit. The whole framework is roughly <strong>1,900 lines</strong> across <strong>14 ES modules</strong>.</p>
+<div class="codeblock" data-lang="bash"><div class="codeblock-head"><span class="lang">bash</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">npm</span> install routiva</code></pre></div>
+<p>Requires <strong>Node.js 18 or newer</strong>. No runtime dependencies. No dev dependencies.</p>
+<blockquote><p>routiva is not trying to replace Express for everyone. It is for the projects that want a framework small enough to read end to end, and a dependency graph that is exactly <code>node_modules/routiva</code>.</p>
+</blockquote>
+<h2 id="why-another-framework">Why another framework?<a class="anchor" href="#why-another-framework" aria-hidden="true">#</a></h2>
+<p>Express is excellent, mature and battle-tested. But it carries a large transitive dependency tree and a handful of sharp edges that this project smooths over:</p>
+<ul><li><strong>Async errors were an afterthought.</strong> In Express 4, a rejected promise in a handler hangs the request unless you call <code>next(err)</code> yourself. routiva catches rejected promises and thrown errors automatically.</li><li><strong>The framework is spread across packages.</strong> CORS, compression, rate limiting and MIME types each live in their own dependency. routiva ships them in the core.</li><li><strong>HTTP correctness is optional.</strong> Express returns <code>404</code> for a path that exists with the wrong method. routiva answers <code>405</code> with an <code>Allow</code> header, and handles <code>OPTIONS</code> and <code>HEAD</code> for you.</li><li><strong>You cannot read it.</strong> Express is many files of which the interesting logic is a fraction. routiva is small enough to understand in an afternoon.</li></ul>
+<h2 id="the-mental-model">The mental model<a class="anchor" href="#the-mental-model" aria-hidden="true">#</a></h2>
+<p>An app is a <strong>router</strong>. A router is an <strong>ordered list of layers</strong>. A layer is either a route, a piece of middleware, or an error handler. Requests walk the list top to bottom; the first layer that sends a response ends the journey.</p>
+<div class="codeblock" data-lang="text"><div class="codeblock-head"><span class="lang">text</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>incoming request
+      │
+      ▼
+┌─────────────────────────────────────────────────────┐
+│  layer 0   logger()          → logs, calls next()    │
+│  layer 1   cors()            → headers, calls next() │
+│  layer 2   json()            → parses body, next()   │
+│  layer 3   GET /users/:id    → sends a response  ────┼──▶ done
+│  layer 4   error handler     → only runs on next(err)│
+└─────────────────────────────────────────────────────┘</code></pre></div>
+<p>That is the entire design. Once you understand the stack, every other page in these docs is detail.</p>
+<h2 id="your-first-server">Your first server<a class="anchor" href="#your-first-server" aria-hidden="true">#</a></h2>
+<p>Create <code>server.js</code>:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { createApp } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> app = <span class="tok-fn">createApp</span>();
+
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/&#39;</span>, (req, res) =&gt; {
+  res.<span class="tok-fn">json</span>({ hello: <span class="tok-str">&#39;world&#39;</span> });
+});
+
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/users/:id&#39;</span>, (req, res) =&gt; {
+  res.<span class="tok-fn">json</span>({ id: req.<span class="tok-prop">params</span>.<span class="tok-prop">id</span> });
+});
+
+app.<span class="tok-fn">listen</span>(<span class="tok-num">3000</span>, () =&gt; {
+  console.<span class="tok-fn">log</span>(<span class="tok-str">&#39;listening on http://localhost:3000&#39;</span>);
+});</code></pre></div>
+<p>Run it with <code>node server.js</code> (your <code>package.json</code> should have <code>&quot;type&quot;: &quot;module&quot;</code>), then:</p>
+<div class="codeblock" data-lang="bash"><div class="codeblock-head"><span class="lang">bash</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">curl</span> http://localhost:<span class="tok-num">3000</span>/
+<span class="tok-kw">curl</span> http://localhost:<span class="tok-num">3000</span>/users/<span class="tok-num">42</span></code></pre></div>
+<h2 id="where-to-go-next">Where to go next<a class="anchor" href="#where-to-go-next" aria-hidden="true">#</a></h2>
+<div class="table-wrap"><table><thead><tr><th>If you want to…</th><th>Read</th></tr></thead><tbody><tr><td>Install it properly and try the bundled demo</td><td><a href="installation.html">Installation</a></td></tr><tr><td>Build a small app step by step</td><td><a href="quick-start.html">Quick start</a></td></tr><tr><td>Understand routes, params and wildcards</td><td><a href="routing.html">Routing</a></td></tr><tr><td>Learn the middleware stack</td><td><a href="middleware.html">Middleware</a></td></tr><tr><td>Look up a method or option</td><td><a href="api-reference.html">API reference</a></td></tr></tbody></table></div>
+<h2 id="requirements-and-compatibility">Requirements and compatibility<a class="anchor" href="#requirements-and-compatibility" aria-hidden="true">#</a></h2>
+<div class="table-wrap"><table><thead><tr><th>Requirement</th><th>Detail</th></tr></thead><tbody><tr><td>Node.js</td><td>18.0.0 or newer (uses global <code>fetch</code> in tests, <code>node:test</code>)</td></tr><tr><td>Module system</td><td>ESM. Set <code>&quot;type&quot;: &quot;module&quot;</code> or use <code>.mjs</code></td></tr><tr><td>Runtime dependencies</td><td>none</td></tr><tr><td>TypeScript</td><td>Ships as plain JavaScript; works with <code>allowJs</code></td></tr></tbody></table></div>
+</div>
+          <nav class="pager"><span class="spacer"></span><a class="next" href="installation.html"><span class="dir">Next</span><span class="t">Installation</span></a></nav>
+        </article>
+        <aside class="docs-toc" id="docsToc" aria-label="On this page"><div class="toc-label">On this page</div><a href="#what-is-routiva">What is routiva?</a><a href="#why-another-framework">Why another framework?</a><a href="#the-mental-model">The mental model</a><a href="#your-first-server">Your first server</a><a href="#where-to-go-next">Where to go next</a><a href="#requirements-and-compatibility">Requirements and compatibility</a></aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="docs-search-overlay" id="docsSearch" role="dialog" aria-modal="true" aria-label="Search documentation" hidden>
+    <div class="docs-search-modal">
+      <div class="docs-search-input-row">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="docsSearchInput" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
+        <span class="kbd">Esc</span>
+      </div>
+      <div class="docs-search-results" id="docsSearchResults"></div>
+      <div class="docs-search-foot">
+        <span><span class="kbd">↑</span><span class="kbd">↓</span> navigate</span>
+        <span><span class="kbd">↵</span> open</span>
+        <span><span class="kbd">Esc</span> close</span>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/docs.js"></script>
+</body>
+</html>

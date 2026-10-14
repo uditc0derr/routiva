@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Middleware · routiva docs</title>
+  <meta name="description" content="What a middleware function is, how ordering works, how to mount routers and paths, and how to write your own.">
+  <meta name="theme-color" content="#0a0a0b">
+  <meta name="generator" content="routiva docs">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="routiva">
+  <meta property="og:title" content="Middleware · routiva docs">
+  <meta property="og:description" content="What a middleware function is, how ordering works, how to mount routers and paths, and how to write your own.">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#doc-content">Skip to content</a>
+
+  <header class="docs-topbar">
+    <button class="docs-menu-btn" id="docsMenuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="docsSidebar">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="nav-logo" href="/">
+      <span class="logo-mark">r</span>
+      <span class="logo-text">routiva</span>
+      <span class="logo-tag">docs</span>
+    </a>
+    <button class="docs-search-trigger" id="docsSearchTrigger" aria-label="Search documentation">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span class="docs-search-label">Search docs</span>
+      <span class="kbd">⌘K</span>
+    </button>
+    <nav class="docs-topbar-links">
+      <a href="/">Home</a>
+      <a class="hide-sm" href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub</a>
+      <a class="hide-sm" href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm</a>
+    </nav>
+  </header>
+
+  <div class="docs-body">
+    <aside class="docs-sidebar" id="docsSidebar">
+      <nav class="docs-nav" aria-label="Documentation">
+        <div class="docs-nav-section"><div class="docs-nav-label">Introduction</div><a class="docs-nav-link" href="getting-started.html">Getting started</a><a class="docs-nav-link" href="installation.html">Installation</a><a class="docs-nav-link" href="quick-start.html">Quick start</a></div><div class="docs-nav-section"><div class="docs-nav-label">Core concepts</div><a class="docs-nav-link" href="core-concepts.html">Core concepts</a><a class="docs-nav-link" href="routing.html">Routing</a><a class="docs-nav-link active" href="middleware.html">Middleware</a><a class="docs-nav-link" href="request-response.html">Request &amp; Response</a><a class="docs-nav-link" href="body-parsing.html">Body parsing</a><a class="docs-nav-link" href="static-files.html">Static files</a><a class="docs-nav-link" href="error-handling.html">Error handling</a></div><div class="docs-nav-section"><div class="docs-nav-label">Built-in middleware</div><a class="docs-nav-link" href="cors.html">CORS</a><a class="docs-nav-link" href="compression.html">Compression</a><a class="docs-nav-link" href="rate-limiting.html">Rate limiting</a><a class="docs-nav-link" href="logging.html">Logging</a></div><div class="docs-nav-section"><div class="docs-nav-label">Guides</div><a class="docs-nav-link" href="examples.html">Examples</a><a class="docs-nav-link" href="testing.html">Testing</a><a class="docs-nav-link" href="performance.html">Performance</a><a class="docs-nav-link" href="express-comparison.html">Coming from Express</a><a class="docs-nav-link" href="faq.html">FAQ &amp; roadmap</a></div><div class="docs-nav-section"><div class="docs-nav-label">Reference</div><a class="docs-nav-link" href="api-reference.html">API reference</a><a class="docs-nav-link" href="architecture.html">Architecture</a></div>
+      </nav>
+      <div class="docs-sidebar-foot">
+        <a href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm ↗</a>
+        <a href="https://github.com/uditc0derr/routiva/blob/main/LICENSE" target="_blank" rel="noopener">MIT ↗</a>
+      </div>
+    </aside>
+    <div class="docs-scrim" id="docsScrim"></div>
+
+    <main class="docs-main" id="doc-content">
+      <div class="docs-main-inner">
+        <article class="docs-article">
+          <header class="docs-article-head">
+            <div class="docs-eyebrow">Core concepts</div>
+            <h1>Middleware</h1>
+            <p class="docs-lede">What a middleware function is, how ordering works, how to mount routers and paths, and how to write your own.</p>
+          </header>
+          <div class="docs-prose"><h2 id="what-middleware-is">What middleware is<a class="anchor" href="#what-middleware-is" aria-hidden="true">#</a></h2>
+<p>Middleware is a function with three parameters:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">function</span> <span class="tok-fn">middleware</span>(req, res, next) {
+  <span class="tok-com">// read the request, set headers, maybe respond …</span>
+  <span class="tok-fn">next</span>(); <span class="tok-com">// … then pass control down the stack</span>
+}</code></pre></div>
+<p>A middleware either <strong>ends the request</strong> by sending a response, or <strong>passes it on</strong> with <code>next()</code>. It can also <strong>fail</strong> the request with <code>next(err)</code>, which switches the stack into error mode. Anything registered with <code>app.use()</code> is middleware; a route handler is just middleware that also has to match a method.</p>
+<h2 id="registering-middleware">Registering middleware<a class="anchor" href="#registering-middleware" aria-hidden="true">#</a></h2>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { createApp, logger, cors, json } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> app = <span class="tok-fn">createApp</span>();
+
+app.<span class="tok-fn">use</span>(<span class="tok-fn">logger</span>());       <span class="tok-com">// every request</span>
+app.<span class="tok-fn">use</span>(<span class="tok-fn">cors</span>());
+app.<span class="tok-fn">use</span>(<span class="tok-fn">json</span>());
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/health&#39;</span>, (req, res) =&gt; res.<span class="tok-fn">json</span>({ status: <span class="tok-str">&#39;ok&#39;</span> }));</code></pre></div>
+<p><code>app.use(fn)</code> runs on every request that reaches it, regardless of path. Passing an array works too: <code>app.use([logger(), cors()])</code>.</p>
+<h2 id="mounting-under-a-path">Mounting under a path<a class="anchor" href="#mounting-under-a-path" aria-hidden="true">#</a></h2>
+<p>Give <code>use()</code> a path to run the middleware only for that prefix:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">use</span>(<span class="tok-str">&#39;/api&#39;</span>, requireApiKey);   <span class="tok-com">// /api, /api/users, /api/users/42, …</span>
+app.<span class="tok-fn">use</span>(<span class="tok-str">&#39;/admin&#39;</span>, adminOnly);     <span class="tok-com">// not /adminx</span></code></pre></div>
+<p>The prefix match uses a lookahead, so <code>/api</code> matches <code>/api</code> and <code>/api/users</code> but not <code>/apis</code>. When the middleware runs, the mount prefix is <strong>stripped</strong> from <code>req.path</code> and <code>req.url</code>, and everything is <strong>restored</strong> on <code>next()</code> — the same mechanism mounted routers use (see <a href="routing.html#mounted-routers">Routing</a>).</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">use</span>(<span class="tok-str">&#39;/api&#39;</span>, (req, res, next) =&gt; {
+  console.<span class="tok-fn">log</span>(req.<span class="tok-prop">path</span>);   <span class="tok-com">// &quot;/users&quot; for a request to /api/users</span>
+  <span class="tok-fn">next</span>();                  <span class="tok-com">// after this, req.path is &quot;/api/users&quot; again</span>
+});</code></pre></div>
+<p>A path can be given without handlers only if you pass at least one function; <code>app.use(&#39;/api&#39;)</code> with no handler throws a <code>TypeError</code>.</p>
+<h2 id="ordering">Ordering<a class="anchor" href="#ordering" aria-hidden="true">#</a></h2>
+<p>There is <strong>one stack</strong>, and <strong>registration order is execution order</strong>. This is the whole mental model:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">use</span>(<span class="tok-fn">logger</span>());                 <span class="tok-com">// 1</span>
+app.<span class="tok-fn">use</span>(<span class="tok-fn">json</span>());                   <span class="tok-com">// 2</span>
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/users&#39;</span>, listUsers);      <span class="tok-com">// 3  ← responds</span>
+app.<span class="tok-fn">use</span>((err, req, res, next) =&gt; { <span class="tok-com">// 4  ← only on next(err)</span>
+  res.<span class="tok-fn">status</span>(<span class="tok-num">500</span>).<span class="tok-fn">json</span>({ error: { message: err.<span class="tok-prop">message</span> } });
+});</code></pre></div>
+<p>Consequences worth internalising:</p>
+<ul><li>Middleware registered <strong>after</strong> a route cannot run before it.</li><li>A route that calls <code>next()</code> lets the request fall through to layers registered below it, including a static handler or a catch-all.</li><li>An error handler placed <strong>before</strong> a route cannot catch that route&#39;s errors, because the cursor has already moved past it.</li></ul>
+<h2 id="passing-control-on">Passing control on<a class="anchor" href="#passing-control-on" aria-hidden="true">#</a></h2>
+<p><code>next()</code> moves to the next matching layer. It is safe to call from nested callbacks and after an <code>await</code>:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">use</span>(<span class="tok-kw">async</span> (req, res, next) =&gt; {
+  <span class="tok-kw">const</span> user = <span class="tok-kw">await</span> <span class="tok-fn">loadUser</span>(req);
+  req.<span class="tok-prop">user</span> = user;
+  <span class="tok-fn">next</span>();
+});</code></pre></div>
+<p>Two rules keep the stack sane:</p>
+<ul><li>Call <code>next()</code> <strong>once</strong>. A <code>nextCalled</code> latch on each layer ignores duplicates.</li><li>Do not call <code>next()</code> <strong>and</strong> send a response. If a layer responds, the request is finished; a later <code>next()</code> simply has nothing to do.</li></ul>
+<p>Errors are the exception you <em>want</em> to forward:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">use</span>((req, res, next) =&gt; {
+  <span class="tok-kw">try</span> {
+    <span class="tok-fn">risky</span>();
+    <span class="tok-fn">next</span>();
+  } <span class="tok-kw">catch</span> (err) {
+    <span class="tok-fn">next</span>(err);        <span class="tok-com">// jump to the error chain</span>
+  }
+});</code></pre></div>
+<p>Throwing synchronously does the same thing, as does rejecting from an <code>async</code> middleware. routiva attaches <code>.catch(next)</code> to every returned promise, so this works without a wrapper:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">use</span>(<span class="tok-kw">async</span> (req, res, next) =&gt; {
+  <span class="tok-kw">await</span> <span class="tok-fn">mightFail</span>();   <span class="tok-com">// a rejection becomes next(err) automatically</span>
+  <span class="tok-fn">next</span>();
+});</code></pre></div>
+<h2 id="error-middleware">Error middleware<a class="anchor" href="#error-middleware" aria-hidden="true">#</a></h2>
+<p>A function with <strong>four</strong> parameters is an error handler. Arity is the only marker — there is no separate registration API:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">use</span>((err, req, res, next) =&gt; {
+  console.<span class="tok-fn">error</span>(err);
+  res.<span class="tok-fn">status</span>(err.<span class="tok-prop">status</span> || <span class="tok-num">500</span>).<span class="tok-fn">json</span>({ error: { message: err.<span class="tok-prop">message</span> } });
+});</code></pre></div>
+<p>During normal flow, four-arity functions are skipped; during error flow, three-arity functions are skipped. Register error handlers <strong>last</strong>. The full story — <code>HttpError</code>, <code>expose stack</code>, the default handler and 404/405 — is on the <a href="error-handling.html">Error handling</a> page.</p>
+<h2 id="mounting-a-router">Mounting a Router<a class="anchor" href="#mounting-a-router" aria-hidden="true">#</a></h2>
+<p>A <code>Router</code> is middleware too. <code>app.use(&#39;/prefix&#39;, router)</code> mounts a whole sub-stack:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">import</span> { App, Router } <span class="tok-kw">from</span> <span class="tok-str">&#39;routiva&#39;</span>;
+
+<span class="tok-kw">const</span> users = <span class="tok-kw">new</span> <span class="tok-fn">Router</span>();
+users.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/&#39;</span>, (req, res) =&gt; res.<span class="tok-fn">json</span>([]));
+users.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/:id&#39;</span>, (req, res) =&gt; res.<span class="tok-fn">json</span>({ id: req.<span class="tok-prop">params</span>.<span class="tok-prop">id</span> }));
+
+<span class="tok-kw">const</span> app = <span class="tok-kw">new</span> <span class="tok-fn">App</span>();
+app.<span class="tok-fn">use</span>(<span class="tok-str">&#39;/users&#39;</span>, users);</code></pre></div>
+<p>Because routers are just middleware, they compose: mount one router inside another, or mix router methods with <code>use()</code> on the same prefix.</p>
+<h2 id="writing-your-own">Writing your own<a class="anchor" href="#writing-your-own" aria-hidden="true">#</a></h2>
+<p>A reusable middleware is a factory that returns the function. Keep the setup in the factory and the per-request work in the returned closure:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">export</span> <span class="tok-kw">function</span> <span class="tok-fn">timing</span>() {
+  <span class="tok-kw">return</span> <span class="tok-kw">function</span> <span class="tok-fn">timingMiddleware</span>(req, res, next) {
+    <span class="tok-kw">const</span> start = process.<span class="tok-prop">hrtime</span>.<span class="tok-fn">bigint</span>();
+    res.<span class="tok-prop">raw</span>.<span class="tok-fn">on</span>(<span class="tok-str">&#39;finish&#39;</span>, () =&gt; {
+      <span class="tok-kw">const</span> ms = <span class="tok-fn">Number</span>(process.<span class="tok-prop">hrtime</span>.<span class="tok-fn">bigint</span>() - start) / <span class="tok-num">1e6</span>;
+      res.<span class="tok-fn">set</span>(<span class="tok-str">&#39;X-Duration-Ms&#39;</span>, ms.<span class="tok-fn">toFixed</span>(<span class="tok-num">1</span>));   <span class="tok-com">// no effect once sent</span>
+      console.<span class="tok-fn">log</span>(<span class="tok-str">`${req.method} ${req.url} ${res.statusCode} ${ms.toFixed(1)}ms`</span>);
+    });
+    <span class="tok-fn">next</span>();
+  };
+}</code></pre></div>
+<p>A few practical notes:</p>
+<ul><li>The factory pattern (<code>timing()</code> returns a function) lets callers pass options and keeps the built-in middleware consistent. Every built-in follows it.</li><li><code>req.raw</code> and <code>res.raw</code> expose the underlying <code>IncomingMessage</code> and <code>ServerResponse</code> for anything the wrappers do not cover.</li><li>Setting a header after the response has started does nothing — do header work before you call <code>next()</code>.</li></ul>
+<h3 id="attaching-data-to-the-request">Attaching data to the request<a class="anchor" href="#attaching-data-to-the-request" aria-hidden="true">#</a></h3>
+<p>A common pattern is to look something up once and stash it on <code>req</code> for later layers:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">use</span>(<span class="tok-str">&#39;/api&#39;</span>, <span class="tok-kw">async</span> (req, res, next) =&gt; {
+  req.<span class="tok-prop">db</span> = <span class="tok-kw">await</span> pool.<span class="tok-fn">connect</span>();
+  <span class="tok-fn">next</span>();
+});
+
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/api/users&#39;</span>, (req, res) =&gt; {
+  res.<span class="tok-fn">json</span>(<span class="tok-fn">rowsFrom</span>(req.<span class="tok-prop">db</span>));
+});</code></pre></div>
+<h3 id="a-conditional-guard">A conditional guard<a class="anchor" href="#a-conditional-guard" aria-hidden="true">#</a></h3>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">use</span>(<span class="tok-str">&#39;/admin&#39;</span>, (req, res, next) =&gt; {
+  <span class="tok-kw">if</span> (req.<span class="tok-fn">header</span>(<span class="tok-str">&#39;authorization&#39;</span>) !== <span class="tok-str">`Bearer ${SECRET}`</span>) {
+    <span class="tok-kw">return</span> <span class="tok-fn">next</span>(<span class="tok-kw">new</span> <span class="tok-fn">HttpError</span>(<span class="tok-num">401</span>, <span class="tok-str">&#39;unauthorized&#39;</span>));
+  }
+  <span class="tok-fn">next</span>();
+});</code></pre></div>
+<h2 id="the-built-in-middleware">The built-in middleware<a class="anchor" href="#the-built-in-middleware" aria-hidden="true">#</a></h2>
+<p>routiva ships the pieces most apps need. Each is documented on its own page:</p>
+<div class="table-wrap"><table><thead><tr><th>Factory</th><th>Page</th></tr></thead><tbody><tr><td><code>json</code> <code>urlencoded</code> <code>text</code> <code>raw</code></td><td><a href="body-parsing.html">Body parsing</a></td></tr><tr><td><code>serveStatic</code></td><td><a href="static-files.html">Static files</a></td></tr><tr><td><code>cors</code></td><td><a href="cors.html">CORS</a></td></tr><tr><td><code>compress</code></td><td><a href="compression.html">Compression</a></td></tr><tr><td><code>rateLimit</code></td><td><a href="rate-limiting.html">Rate limiting</a></td></tr><tr><td><code>logger</code></td><td><a href="logging.html">Logging</a></td></tr></tbody></table></div>
+<p>Every factory is also attached to the <code>App</code> class (<code>App.json()</code>, <code>App.cors()</code>, …), so both import styles work.</p>
+<h2 id="a-recommended-order">A recommended order<a class="anchor" href="#a-recommended-order" aria-hidden="true">#</a></h2>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code><span class="tok-kw">const</span> app = <span class="tok-fn">createApp</span>();
+
+app.<span class="tok-fn">use</span>(<span class="tok-fn">logger</span>());          <span class="tok-com">// observe everything</span>
+app.<span class="tok-fn">use</span>(<span class="tok-fn">cors</span>());            <span class="tok-com">// answer preflights early</span>
+app.<span class="tok-fn">use</span>(<span class="tok-fn">compress</span>());        <span class="tok-com">// wrap res.send before bodies are built</span>
+app.<span class="tok-fn">use</span>(<span class="tok-fn">rateLimit</span>());       <span class="tok-com">// reject before doing real work</span>
+app.<span class="tok-fn">use</span>(<span class="tok-fn">json</span>());            <span class="tok-com">// parse bodies</span>
+app.<span class="tok-fn">use</span>(<span class="tok-fn">serveStatic</span>(<span class="tok-str">&#39;public&#39;</span>));
+
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/api/users&#39;</span>, listUsers);
+app.<span class="tok-fn">use</span>(<span class="tok-str">&#39;/api&#39;</span>, apiRouter);
+app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;*&#39;</span>, (req, res) =&gt; res.<span class="tok-fn">sendFile</span>(<span class="tok-str">&#39;public/index.html&#39;</span>));
+
+app.<span class="tok-fn">use</span>(errorHandler);      <span class="tok-com">// 4-arity, always last</span></code></pre></div>
+<h2 id="where-to-go-next">Where to go next<a class="anchor" href="#where-to-go-next" aria-hidden="true">#</a></h2>
+<div class="table-wrap"><table><thead><tr><th>If you want to…</th><th>Read</th></tr></thead><tbody><tr><td>Understand path matching</td><td><a href="routing.html">Routing</a></td></tr><tr><td>Handle thrown and rejected errors</td><td><a href="error-handling.html">Error handling</a></td></tr><tr><td>Use the built-in middleware</td><td><a href="cors.html">CORS</a>, <a href="compression.html">Compression</a>, <a href="rate-limiting.html">Rate limiting</a></td></tr></tbody></table></div>
+</div>
+          <nav class="pager"><a class="" href="routing.html"><span class="dir">Previous</span><span class="t">Routing</span></a><a class="next" href="request-response.html"><span class="dir">Next</span><span class="t">Request &amp; Response</span></a></nav>
+        </article>
+        <aside class="docs-toc" id="docsToc" aria-label="On this page"><div class="toc-label">On this page</div><a href="#what-middleware-is">What middleware is</a><a href="#registering-middleware">Registering middleware</a><a href="#mounting-under-a-path">Mounting under a path</a><a href="#ordering">Ordering</a><a href="#passing-control-on">Passing control on</a><a href="#error-middleware">Error middleware</a><a href="#mounting-a-router">Mounting a Router</a><a href="#writing-your-own">Writing your own</a><a class="h3" href="#attaching-data-to-the-request">Attaching data to the request</a><a class="h3" href="#a-conditional-guard">A conditional guard</a><a href="#the-built-in-middleware">The built-in middleware</a><a href="#a-recommended-order">A recommended order</a><a href="#where-to-go-next">Where to go next</a></aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="docs-search-overlay" id="docsSearch" role="dialog" aria-modal="true" aria-label="Search documentation" hidden>
+    <div class="docs-search-modal">
+      <div class="docs-search-input-row">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="docsSearchInput" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
+        <span class="kbd">Esc</span>
+      </div>
+      <div class="docs-search-results" id="docsSearchResults"></div>
+      <div class="docs-search-foot">
+        <span><span class="kbd">↑</span><span class="kbd">↓</span> navigate</span>
+        <span><span class="kbd">↵</span> open</span>
+        <span><span class="kbd">Esc</span> close</span>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/docs.js"></script>
+</body>
+</html>

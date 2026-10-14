@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ &amp; roadmap · routiva docs</title>
+  <meta name="description" content="Production readiness, TypeScript, websockets, uploads, Node versions, framework comparisons, the roadmap and contributing.">
+  <meta name="theme-color" content="#0a0a0b">
+  <meta name="generator" content="routiva docs">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="routiva">
+  <meta property="og:title" content="FAQ &amp; roadmap · routiva docs">
+  <meta property="og:description" content="Production readiness, TypeScript, websockets, uploads, Node versions, framework comparisons, the roadmap and contributing.">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#doc-content">Skip to content</a>
+
+  <header class="docs-topbar">
+    <button class="docs-menu-btn" id="docsMenuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="docsSidebar">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="nav-logo" href="/">
+      <span class="logo-mark">r</span>
+      <span class="logo-text">routiva</span>
+      <span class="logo-tag">docs</span>
+    </a>
+    <button class="docs-search-trigger" id="docsSearchTrigger" aria-label="Search documentation">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span class="docs-search-label">Search docs</span>
+      <span class="kbd">⌘K</span>
+    </button>
+    <nav class="docs-topbar-links">
+      <a href="/">Home</a>
+      <a class="hide-sm" href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub</a>
+      <a class="hide-sm" href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm</a>
+    </nav>
+  </header>
+
+  <div class="docs-body">
+    <aside class="docs-sidebar" id="docsSidebar">
+      <nav class="docs-nav" aria-label="Documentation">
+        <div class="docs-nav-section"><div class="docs-nav-label">Introduction</div><a class="docs-nav-link" href="getting-started.html">Getting started</a><a class="docs-nav-link" href="installation.html">Installation</a><a class="docs-nav-link" href="quick-start.html">Quick start</a></div><div class="docs-nav-section"><div class="docs-nav-label">Core concepts</div><a class="docs-nav-link" href="core-concepts.html">Core concepts</a><a class="docs-nav-link" href="routing.html">Routing</a><a class="docs-nav-link" href="middleware.html">Middleware</a><a class="docs-nav-link" href="request-response.html">Request &amp; Response</a><a class="docs-nav-link" href="body-parsing.html">Body parsing</a><a class="docs-nav-link" href="static-files.html">Static files</a><a class="docs-nav-link" href="error-handling.html">Error handling</a></div><div class="docs-nav-section"><div class="docs-nav-label">Built-in middleware</div><a class="docs-nav-link" href="cors.html">CORS</a><a class="docs-nav-link" href="compression.html">Compression</a><a class="docs-nav-link" href="rate-limiting.html">Rate limiting</a><a class="docs-nav-link" href="logging.html">Logging</a></div><div class="docs-nav-section"><div class="docs-nav-label">Guides</div><a class="docs-nav-link" href="examples.html">Examples</a><a class="docs-nav-link" href="testing.html">Testing</a><a class="docs-nav-link" href="performance.html">Performance</a><a class="docs-nav-link" href="express-comparison.html">Coming from Express</a><a class="docs-nav-link active" href="faq.html">FAQ &amp; roadmap</a></div><div class="docs-nav-section"><div class="docs-nav-label">Reference</div><a class="docs-nav-link" href="api-reference.html">API reference</a><a class="docs-nav-link" href="architecture.html">Architecture</a></div>
+      </nav>
+      <div class="docs-sidebar-foot">
+        <a href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">npm ↗</a>
+        <a href="https://github.com/uditc0derr/routiva/blob/main/LICENSE" target="_blank" rel="noopener">MIT ↗</a>
+      </div>
+    </aside>
+    <div class="docs-scrim" id="docsScrim"></div>
+
+    <main class="docs-main" id="doc-content">
+      <div class="docs-main-inner">
+        <article class="docs-article">
+          <header class="docs-article-head">
+            <div class="docs-eyebrow">Guides</div>
+            <h1>FAQ &amp; roadmap</h1>
+            <p class="docs-lede">Production readiness, TypeScript, websockets, uploads, Node versions, framework comparisons, the roadmap and contributing.</p>
+          </header>
+          <div class="docs-prose"><h2 id="is-it-production-ready">Is it production-ready?<a class="anchor" href="#is-it-production-ready" aria-hidden="true">#</a></h2>
+<p>It is small and tested, and the behaviour it implements is deliberate. It is also new. The honest position:</p>
+<ul><li>It works. There is a real test suite and a runnable demo app.</li><li>It has not seen years of hostile traffic the way Express has.</li><li>It ships no ecosystem, so anything beyond the built-in middleware is yours to write.</li></ul>
+<p>It is a good fit for internal services, prototypes, edge and embedded targets, and any project that values a zero-dependency core. Evaluate it against your own workload before putting it in front of users; nothing here replaces that judgement.</p>
+<h2 id="does-it-work-with-typescript">Does it work with TypeScript?<a class="anchor" href="#does-it-work-with-typescript" aria-hidden="true">#</a></h2>
+<p>There are no bundled type declarations. routiva ships as plain ESM JavaScript. You have three options:</p>
+<ol><li>Set <code>&quot;allowJs&quot;: true</code> and let TypeScript infer what it can from the source.</li><li>Write a <code>.d.ts</code> file for the surface you use.</li><li>Write the server in plain JavaScript.</li></ol>
+<p>The API is regular: classes, named exports and middleware factories. Nothing relies on dynamic shapes that resist typing, so hand-written declarations are straightforward. Bundled types are on the roadmap.</p>
+<h2 id="does-it-support-websockets-or-http2">Does it support WebSockets or HTTP/2?<a class="anchor" href="#does-it-support-websockets-or-http2" aria-hidden="true">#</a></h2>
+<p>Not directly. routiva builds on <code>node:http</code>, and <code>app.listen()</code> returns the underlying <code>http.Server</code>, so you can attach a WebSocket library to its <code>upgrade</code> event. There is no HTTP/2 support and none is planned for the zero-dependency core.</p>
+<h2 id="is-there-a-template-engine">Is there a template engine?<a class="anchor" href="#is-there-a-template-engine" aria-hidden="true">#</a></h2>
+<p>No. There is no <code>res.render()</code>, no view engine setting and no <code>app.locals</code>. You compose HTML in a function and send it:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">get</span>(<span class="tok-str">&#39;/&#39;</span>, (req, res) =&gt; {
+  res.<span class="tok-fn">type</span>(<span class="tok-str">&#39;html&#39;</span>).<span class="tok-fn">send</span>(<span class="tok-str">`&lt;h1&gt;Hello&lt;/h1&gt;`</span>);
+});</code></pre></div>
+<p>Escape any user input you interpolate yourself. If you need a full template engine, pair routiva with a standalone renderer or choose Express, where <code>res.render()</code> is integrated.</p>
+<h2 id="how-do-i-handle-file-uploads">How do I handle file uploads?<a class="anchor" href="#how-do-i-handle-file-uploads" aria-hidden="true">#</a></h2>
+<p>There is no multipart parser. <code>raw()</code> gives you the request body as a <code>Buffer</code> and <code>text()</code> gives it to you as a string, so a single-part upload can be read directly:</p>
+<div class="codeblock" data-lang="js"><div class="codeblock-head"><span class="lang">js</span><button class="copy-btn" data-copy aria-label="Copy code">Copy</button></div><pre><code>app.<span class="tok-fn">post</span>(<span class="tok-str">&#39;/upload&#39;</span>, <span class="tok-fn">raw</span>({ limit: <span class="tok-str">&#39;5mb&#39;</span> }), (req, res) =&gt; {
+  res.<span class="tok-fn">json</span>({ bytes: req.<span class="tok-prop">body</span>.<span class="tok-prop">length</span> });
+});</code></pre></div>
+<p>For <code>multipart/form-data</code>, parse the body yourself or run a standalone parsing step. There is no upload middleware in the box, and adding one would bring in the kind of dependency routiva avoids. <code>raw()</code> still enforces a size <code>limit</code>.</p>
+<h2 id="which-node-versions-are-supported">Which Node versions are supported?<a class="anchor" href="#which-node-versions-are-supported" aria-hidden="true">#</a></h2>
+<p>Node <code>18</code> and newer, matching <code>&quot;engines&quot;: { &quot;node&quot;: &quot;&gt;=18&quot; }</code>. The runtime uses standard Node modules (<code>node:http</code>, <code>node:fs</code>, <code>node:path</code>, <code>node:zlib</code>, and friends), all present on 18. The test suite relies on global <code>fetch</code> and <code>node:test</code>, which are also 18+. There is no build step, so any current LTS or newer works.</p>
+<h2 id="how-is-it-different-from-fastify-hono-or-koa">How is it different from Fastify, Hono or Koa?<a class="anchor" href="#how-is-it-different-from-fastify-hono-or-koa" aria-hidden="true">#</a></h2>
+<div class="table-wrap"><table><thead><tr><th></th><th>routiva</th><th>Fastify</th><th>Hono</th><th>Koa</th></tr></thead><tbody><tr><td>Runtime dependencies</td><td>0</td><td>some</td><td>some</td><td>some</td></tr><tr><td>Target</td><td>Node <code>node:http</code></td><td>Node</td><td>multi-runtime</td><td>Node</td></tr><tr><td>Schema validation</td><td>no</td><td>built in</td><td>no</td><td>no</td></tr><tr><td>TypeScript types</td><td>not bundled</td><td>yes</td><td>yes</td><td>community</td></tr><tr><td>Middleware model</td><td>one ordered stack</td><td>hooks and plugins</td><td>one stack</td><td>onion</td></tr><tr><td>Opinion</td><td>Express-like</td><td>plugin-first</td><td>tiny and portable</td><td>minimal</td></tr></tbody></table></div>
+<p>Koa replaces <code>req</code> and <code>res</code> with its own context and uses onion middleware. Fastify adds schemas, plugins and serialization. Hono targets edge runtimes and other platforms. routiva keeps Express&#39;s stack and handler signatures and stops there.</p>
+<h2 id="how-do-i-report-a-bug-or-contribute">How do I report a bug or contribute?<a class="anchor" href="#how-do-i-report-a-bug-or-contribute" aria-hidden="true">#</a></h2>
+<p>Open an issue or a pull request on GitHub: <a href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">github.com/uditc0derr/routiva</a>. A useful bug report has a minimal reproduction, the Node version and what you expected to happen. There is no CLA.</p>
+<h2 id="roadmap">Roadmap<a class="anchor" href="#roadmap" aria-hidden="true">#</a></h2>
+<p>Ideas that fit the architecture without breaking the zero-dependency rule, in no committed order:</p>
+<ul><li><code>res.render()</code> with a pluggable engine interface.</li><li>A streaming-safe compression path that wraps the socket, not just <code>res.send</code>.</li><li>Signed cookies and a lightweight <code>session()</code> store.</li><li>A full <code>app.mount()</code> with sub-app semantics.</li><li>Bundled TypeScript declarations.</li><li>Coverage reporting in CI.</li></ul>
+<p>None of these has a date. If one matters to you, say so in an issue.</p>
+<h2 id="contributing">Contributing<a class="anchor" href="#contributing" aria-hidden="true">#</a></h2>
+<ul><li><strong>Repository:</strong> <a href="https://github.com/uditc0derr/routiva" target="_blank" rel="noopener">uditc0derr/routiva</a></li><li><strong>Package:</strong> <a href="https://www.npmjs.com/package/routiva" target="_blank" rel="noopener">routiva on npm</a></li><li><strong>License:</strong> MIT</li></ul>
+<p>Run <code>npm test</code> before opening a pull request. Keep the dependency count at zero: if a Node built-in can do it, use the built-in. Match the existing file layout and the one-layer-per-handler model. Small, focused changes are easier to review than broad rewrites.</p>
+</div>
+          <nav class="pager"><a class="" href="express-comparison.html"><span class="dir">Previous</span><span class="t">Coming from Express</span></a><a class="next" href="api-reference.html"><span class="dir">Next</span><span class="t">API reference</span></a></nav>
+        </article>
+        <aside class="docs-toc" id="docsToc" aria-label="On this page"><div class="toc-label">On this page</div><a href="#is-it-production-ready">Is it production-ready?</a><a href="#does-it-work-with-typescript">Does it work with TypeScript?</a><a href="#does-it-support-websockets-or-http2">Does it support WebSockets or HTTP/2?</a><a href="#is-there-a-template-engine">Is there a template engine?</a><a href="#how-do-i-handle-file-uploads">How do I handle file uploads?</a><a href="#which-node-versions-are-supported">Which Node versions are supported?</a><a href="#how-is-it-different-from-fastify-hono-or-koa">How is it different from Fastify, Hono or Koa?</a><a href="#how-do-i-report-a-bug-or-contribute">How do I report a bug or contribute?</a><a href="#roadmap">Roadmap</a><a href="#contributing">Contributing</a></aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="docs-search-overlay" id="docsSearch" role="dialog" aria-modal="true" aria-label="Search documentation" hidden>
+    <div class="docs-search-modal">
+      <div class="docs-search-input-row">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="docsSearchInput" type="search" placeholder="Search the docs…" autocomplete="off" spellcheck="false">
+        <span class="kbd">Esc</span>
+      </div>
+      <div class="docs-search-results" id="docsSearchResults"></div>
+      <div class="docs-search-foot">
+        <span><span class="kbd">↑</span><span class="kbd">↓</span> navigate</span>
+        <span><span class="kbd">↵</span> open</span>
+        <span><span class="kbd">Esc</span> close</span>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/docs.js"></script>
+</body>
+</html>
